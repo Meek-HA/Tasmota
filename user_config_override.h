@@ -240,6 +240,11 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
 #undef CODE_IMAGE_STR
 #define CODE_IMAGE_STR "MEEK MT3"
 
+#ifdef PROJECT
+#undef PROJECT
+#endif
+#define PROJECT "MEEK-MT3"
+
 #ifdef MODULE
 #undef MODULE
 #endif
@@ -273,29 +278,36 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
 #undef CODE_IMAGE_STR
 #define CODE_IMAGE_STR "MEEK MT2"
 
+#ifdef PROJECT
+#undef PROJECT
+#endif
+#define PROJECT "MEEK-MT2"
+
 #ifdef MODULE
 #undef MODULE
 #endif
+#define MODULE USER_MODULE
 
 #ifdef FALLBACK_MODULE
 #undef FALLBACK_MODULE
 #endif
-#define MODULE USER_MODULE
+#define FALLBACK_MODULE USER_MODULE
 
 #ifdef ESP8266
-#define FALLBACK_MODULE USER_MODULE // [Module2] Select default module on fast reboot where USER_MODULE is user template
-#define USER_TEMPLATE "{\"NAME\":\"MEEK MT2\",\"GPIO\":[480,1,1376,1,225,226,1,1,161,162,160,224,3840,1],\"FLAG\":0,\"BASE\":18}"
+#define USER_TEMPLATE "{\"NAME\":\"MEEK MT2\",\"GPIO\":[480,1,1376,1,225,224,1,1,0,161,160,0,3840,1],\"FLAG\":0,\"BASE\":18}"
 #endif
-
-#ifdef FRIENDLY_NAME
-#undef FRIENDLY_NAME
-#endif
-#define FRIENDLY_NAME "MEEK_MT2"
 
 #ifdef USER_RULE1
 #undef USER_RULE1
 #endif
-#define USER_RULE1 "on System#Boot do PWMFrequency,4002 endon on power1#state=1 do Backlog0 led1,250,0,250; Buzzer1,5 endon on power1#state=0 do Backlog0 led1,100,100,100; Buzzer1,5 endon on power2#state=1 do Backlog0 led2,250,0,250; Buzzer1,5 endon on power2#state=0 do Backlog0 led2,100,100,100; Buzzer1,5 endon on power3#state=1 do Backlog0 led3,250,0,250; Buzzer1,5 endon on power3#state=0 do Backlog0 led3,100,100,100; Buzzer1,5 endon"
+#define USER_RULE1 "on System#Boot do PWMFrequency,4000 endon on power1#state=1 do Backlog0 led1,250,0,250; Buzzer1,5 endon on power1#state=0 do Backlog0 led1,100,100,100; Buzzer1,5 endon on power2#state=1 do Backlog0 led2,250,0,250; Buzzer1,5 endon on power2#state=0 do Backlog0 led2,100,100,100; Buzzer1,5 endon"
+
+#ifdef FRIENDLY_NAME
+#undef FRIENDLY_NAME
+#endif
+#define FRIENDLY_NAME "Touch 2"
+
+#define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 RGB LED;Wifi 3;SwitchDebounce 52"
 #endif
 
 //-- MEEK ZIGBEE ESP8266 ---------------------------
