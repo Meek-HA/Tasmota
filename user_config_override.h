@@ -269,7 +269,7 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
 #endif
 #define FRIENDLY_NAME "Touch 3"
 
-#define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Center;FriendlyName3 Right;FriendlyName4 $Touch Control;FriendlyName5 $RGB LED;Wifi 3;SwitchDebounce 52"
+#define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Center;FriendlyName3 Right;FriendlyName4 $Touch Control;FriendlyName5 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Center;WebButton3 Right;WebButton4 Touch;WebButton5 RGB"
 #endif
  
 //-- MEEK MT2 ---------------------------
@@ -307,7 +307,7 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
 #endif
 #define FRIENDLY_NAME "Touch 2"
 
-#define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52"
+#define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB"
 #endif
 
 //-- MEEK ZIGBEE ESP8266 ---------------------------
@@ -358,6 +358,11 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
 #undef CODE_IMAGE_STR
 #define CODE_IMAGE_STR "MEEK DD"
 
+#ifdef PROJECT
+#undef PROJECT
+#endif
+#define PROJECT "MEEK-DD"
+
 #ifdef MODULE
 #undef MODULE
 #endif
@@ -369,19 +374,19 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
 #define FALLBACK_MODULE USER_MODULE
 
 #ifdef ESP8266
-#define USER_TEMPLATE "{\"NAME\":\"MEEK DD\",\"GPIO\":[480,1,1376,1,225,226,1,1,161,162,160,224,3840,1],\"FLAG\":0,\"BASE\":18}"
+#define USER_TEMPLATE "{\"NAME\":\"MEEK DD\",\"GPIO\":[0,0,1376,3232,608,640,1,1,352,160,353,224,2144,1],\"FLAG\":0,\"BASE\":18}"
 #endif
 
 #ifdef USER_RULE1
 #undef USER_RULE1
 #endif
-#define USER_RULE1 "on System#Boot do PWMFrequency,4003 endon on power1#state=1 do Backlog0 led1,250,0,250; Buzzer1,5 endon on power1#state=0 do Backlog0 led1,100,100,100; Buzzer1,5 endon on power2#state=1 do Backlog0 led2,250,0,250; Buzzer1,5 endon on power2#state=0 do Backlog0 led2,100,100,100; Buzzer1,5 endon on power3#state=1 do Backlog0 led3,250,0,250; Buzzer1,5 endon on power3#state=0 do Backlog0 led3,100,100,100; Buzzer1,5 endon"
+#define USER_RULE1 "on System#Boot do mp3volume 5 endon on Switch1#state do backlog0 mp3play 1;led1,10,0,0 endon on Switch1#state=0 do led1,0,0,10 endon"
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
 #endif
-#define FRIENDLY_NAME "MEEK_DD"
-#define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;rule1 1"
+#define FRIENDLY_NAME "MEEK DD"
+#define USER_BACKLOG "SetOption114 1;SwitchMode 1;rule1 1;Wifi 3;FriendlyName1 Relay;WebButton1 Relay;FriendlyName2 RGB;WebButton2 RGB"
 
 #ifdef USE_MP3_PLAYER
 #undef USE_MP3_PLAYER
@@ -393,5 +398,8 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
 #endif
 #define MP3_VOLUME 25
 #endif
+
+#define USE_I2C
+#define USE_SERIAL_BRIDGE
 
 #endif  // _USER_CONFIG_OVERRIDE_H_
