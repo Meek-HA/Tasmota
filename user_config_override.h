@@ -174,6 +174,12 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
 #undef USE_IR_RECEIVE
 #endif
 
+//-- Enable MQTT Event ---------------------------
+#ifdef SUPPORT_MQTT_EVENT
+#undef SUPPORT_MQTT_EVENT
+#endif
+#define SUPPORT_MQTT_EVENT
+
 //-- Location ---------------------------
 #ifdef LATITUDE
 #undef LATITUDE
@@ -373,20 +379,25 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
 #endif
 #define FALLBACK_MODULE USER_MODULE
 
+#ifdef MQTT_TOPIC
+#undef MQTT_TOPIC
+#endif
+#define MQTT_TOPIC             PROJECT
+
 #ifdef ESP8266
-#define USER_TEMPLATE "{\"NAME\":\"MEEK DD\",\"GPIO\":[0,0,1376,3232,608,640,1,1,352,160,353,224,2144,1],\"FLAG\":0,\"BASE\":18}"
+#define USER_TEMPLATE "{\"NAME\":\"MEEK DD\",\"GPIO\":[0,0,1376,3232,608,640,160,225,352,161,353,224,2144,1],\"FLAG\":0,\"BASE\":18}"
 #endif
 
 #ifdef USER_RULE1
 #undef USER_RULE1
 #endif
-#define USER_RULE1 "on System#Boot do mp3volume 5 endon on Switch1#state do backlog0 mp3play 1;led1,10,0,0 endon on Switch1#state=0 do led1,0,0,10 endon"
+#define USER_RULE1 "on System#Boot do mp3volume 5 endon on Power2#state=1 do backlog mp3play 1;led1,10,0,0 endon on Power2#state=0 do led1,0,0,10 endon"
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
 #endif
 #define FRIENDLY_NAME "MEEK DD"
-#define USER_BACKLOG "SetOption114 1;SwitchMode 1;rule1 1;Wifi 3;FriendlyName1 Relay;WebButton1 Relay;FriendlyName2 RGB;WebButton2 RGB"
+#define USER_BACKLOG "SwitchMode1 4;SwitchMode2 4;PulseTime2 25;SerialDelimiter 10;SerialSend 1;rule1 1;Wifi 3;FriendlyName1 Relay;WebButton1 Relay;FriendlyName2 DoorBell;WebButton2 DoorBell;FriendlyName3 $RGB;WebButton3 RGB"
 
 #ifdef USE_MP3_PLAYER
 #undef USE_MP3_PLAYER
