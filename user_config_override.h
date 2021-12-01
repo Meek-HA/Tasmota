@@ -26,7 +26,9 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE8266
 board = esp8266_4M2M
 
 [env:tasmota-zigbee32]
-build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
+extends                 = env:tasmota32_base
+build_flags             = ${env:tasmota32_base.build_flags} -DFIRMWARE_ZIGBEE32
+board                   = esp32_4M
 
 -------------------------------------------
 */
@@ -316,6 +318,66 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
 #define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB"
 #endif
 
+//-- MEEK DD ---------------------------
+#ifdef FIRMWARE_DD
+#warning **** Build: MEEK DD ****
+#undef CODE_IMAGE_STR
+#define CODE_IMAGE_STR "MEEK DD"
+
+#ifdef PROJECT
+#undef PROJECT
+#endif
+#define PROJECT "MEEK-DD"
+
+#ifdef MODULE
+#undef MODULE
+#endif
+#define MODULE USER_MODULE
+
+#ifdef FALLBACK_MODULE
+#undef FALLBACK_MODULE
+#endif
+#define FALLBACK_MODULE USER_MODULE
+
+#ifdef MQTT_TOPIC
+#undef MQTT_TOPIC
+#endif
+#define MQTT_TOPIC             PROJECT
+
+#ifdef USE_TCP_BRIDGE
+#undef USE_TCP_BRIDGE
+#endif
+#define USE_TCP_BRIDGE
+
+#ifdef ESP8266
+#define USER_TEMPLATE "{\"NAME\":\"MEEK DD\",\"GPIO\":[0,0,1376,3232,608,640,160,225,352,161,353,224,2144,1],\"FLAG\":0,\"BASE\":18}"
+#endif
+
+#ifdef USER_RULE1
+#undef USER_RULE1
+#endif
+#define USER_RULE1 "on System#Boot do mp3volume 5 endon on Power2#state=1 do backlog mp3play 1;led1,10,0,0 endon on Power2#state=0 do led1,0,0,10 endon"
+
+#ifdef FRIENDLY_NAME
+#undef FRIENDLY_NAME
+#endif
+#define FRIENDLY_NAME "MEEK DD"
+#define USER_BACKLOG "SwitchMode1 4;SwitchMode2 4;PulseTime2 25;SerialDelimiter 10;SerialSend 1;rule1 1;Wifi 3;FriendlyName1 Relay;WebButton1 Relay;FriendlyName2 DoorBell;WebButton2 DoorBell;FriendlyName3 $RGB;WebButton3 RGB"
+
+#ifdef USE_MP3_PLAYER
+#undef USE_MP3_PLAYER
+#endif
+#define USE_MP3_PLAYER
+
+#ifdef MP3_VOLUME
+#undef MP3_VOLUME
+#endif
+#define MP3_VOLUME 25
+
+#define USE_I2C
+#define USE_SERIAL_BRIDGE
+#endif
+
 //-- MEEK ZIGBEE ESP8266 ---------------------------
 #ifdef FIRMWARE_ZIGBEE8266
 #warning **** Build: MEEK ZIGBEE ESP8266 ****
@@ -349,25 +411,32 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
 #ifdef USER_RULE1
 #undef USER_RULE1
 #endif
-#define USER_RULE1 "on System#Boot do PWMFrequency,4003 endon on power1#state=1 do Backlog0 led1,250,0,250; Buzzer1,5 endon on power1#state=0 do Backlog0 led1,100,100,100; Buzzer1,5 endon on power2#state=1 do Backlog0 led2,250,0,250; Buzzer1,5 endon on power2#state=0 do Backlog0 led2,100,100,100; Buzzer1,5 endon on power3#state=1 do Backlog0 led3,250,0,250; Buzzer1,5 endon on power3#state=0 do Backlog0 led3,100,100,100; Buzzer1,5 endon"
+#define USER_RULE1 "on System#Boot do PWMFrequency,4000 endon on power1#state=1 do Backlog0 led1,250,0,250; Buzzer1,5 endon on power1#state=0 do Backlog0 led1,100,100,100; Buzzer1,5 endon on power2#state=1 do Backlog0 led2,250,0,250; Buzzer1,5 endon on power2#state=0 do Backlog0 led2,100,100,100; Buzzer1,5 endon on power3#state=1 do Backlog0 led3,250,0,250; Buzzer1,5 endon on power3#state=0 do Backlog0 led3,100,100,100; Buzzer1,5 endon"
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
 #endif
 #define FRIENDLY_NAME "MEEK_ZIGBEE"
-#define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;rule1 1"
+#define USER_BACKLOG "Wifi 3;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;rule1 1"
 #endif
 
-//-- MEEK DD ---------------------------
-#ifdef FIRMWARE_DD
-#warning **** Build: MEEK DD ****
+//-- MEEK ZIGBEE ESP32 ---------------------------
+#ifdef FIRMWARE_ZIGBEE32
+#warning **** Build: MEEK ZIGBEE ESP32 ****
 #undef CODE_IMAGE_STR
-#define CODE_IMAGE_STR "MEEK DD"
+#define CODE_IMAGE_STR "MEEK ZIGBEE"
 
-#ifdef PROJECT
-#undef PROJECT
+#ifdef USE_SERIAL_BRIDGE
+#undef USE_SERIAL_BRIDGE
 #endif
-#define PROJECT "MEEK-DD"
+#define USE_SERIAL_BRIDGE
+
+#define USE_ZIGBEE     
+
+#ifdef USE_TCP_BRIDGE
+#undef USE_TCP_BRIDGE
+#endif
+#define USE_TCP_BRIDGE
 
 #ifdef MODULE
 #undef MODULE
@@ -379,38 +448,20 @@ build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE32
 #endif
 #define FALLBACK_MODULE USER_MODULE
 
-#ifdef MQTT_TOPIC
-#undef MQTT_TOPIC
-#endif
-#define MQTT_TOPIC             PROJECT
-
-#ifdef ESP8266
-#define USER_TEMPLATE "{\"NAME\":\"MEEK DD\",\"GPIO\":[0,0,1376,3232,608,640,160,225,352,161,353,224,2144,1],\"FLAG\":0,\"BASE\":18}"
+#ifdef ESP32
+#define USER_TEMPLATE "{\"NAME\":\"MEEK ZIGBEE\",\"GPIO\":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,1,0,0,1],\"FLAG\":0,\"BASE\":1}"
 #endif
 
 #ifdef USER_RULE1
 #undef USER_RULE1
 #endif
-#define USER_RULE1 "on System#Boot do mp3volume 5 endon on Power2#state=1 do backlog mp3play 1;led1,10,0,0 endon on Power2#state=0 do led1,0,0,10 endon"
+#define USER_RULE1 "on System#Boot do PWMFrequency,4000 endon on power1#state=1 do Backlog0 led1,250,0,250; Buzzer1,5 endon on power1#state=0 do Backlog0 led1,100,100,100; Buzzer1,5 endon on power2#state=1 do Backlog0 led2,250,0,250; Buzzer1,5 endon on power2#state=0 do Backlog0 led2,100,100,100; Buzzer1,5 endon on power3#state=1 do Backlog0 led3,250,0,250; Buzzer1,5 endon on power3#state=0 do Backlog0 led3,100,100,100; Buzzer1,5 endon"
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
 #endif
-#define FRIENDLY_NAME "MEEK DD"
-#define USER_BACKLOG "SwitchMode1 4;SwitchMode2 4;PulseTime2 25;SerialDelimiter 10;SerialSend 1;rule1 1;Wifi 3;FriendlyName1 Relay;WebButton1 Relay;FriendlyName2 DoorBell;WebButton2 DoorBell;FriendlyName3 $RGB;WebButton3 RGB"
-
-#ifdef USE_MP3_PLAYER
-#undef USE_MP3_PLAYER
+#define FRIENDLY_NAME "MEEK_ZIGBEE"
+#define USER_BACKLOG "Wifi 3;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;rule1 1"
 #endif
-#define USE_MP3_PLAYER
-
-#ifdef MP3_VOLUME
-#undef MP3_VOLUME
-#endif
-#define MP3_VOLUME 25
-#endif
-
-#define USE_I2C
-#define USE_SERIAL_BRIDGE
 
 #endif  // _USER_CONFIG_OVERRIDE_H_
