@@ -1,0 +1,31 @@
+>D
+melody=1
+volume=10
+doorbell=0
+>W
+sl(1 25 melody "1" "Melody" "25")
+sl(0 100 volume "0" "Volume" "100")
+Melody:{m} %0melody%
+Volume:{m} %0volume%
+>BS
++>subscribe volume, cmnd/%topic%/volume
++>subscribe melody, cmnd/%topic%/melody
+>S
+if chg[volume]> 0 {
+=>publish stat/%topic%/RESULT {"volume":"%0volume%"}
+=>mp3volume %volume%
+print Mistik heeft slider updated %0volume%
+}
+if chg[melody]> 0 {
+=>publish stat/%topic%/RESULT {"melody":"%0melody%"}
+=>mp3track %melody%
+print Mistik heeft Melody updated %0melody%
+}
+
+>T
+doorbell=pwr[2]
+if doorbell==1
+then
+=>mp3play %melody%
+print Someone is at the door!
+endif
