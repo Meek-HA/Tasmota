@@ -14,12 +14,12 @@ Volume:{m} %0volume%
 if chg[volume]> 0 {
 =>publish stat/%topic%/RESULT {"volume":"%0volume%"}
 =>mp3volume %volume%
-print Mistik heeft slider updated %0volume%
+print Volume changed to level: %0volume%
 }
 if chg[melody]> 0 {
 =>publish stat/%topic%/RESULT {"melody":"%0melody%"}
 =>mp3track %melody%
-print Mistik heeft Melody updated %0melody%
+print Melody selection updated to song: %0melody%
 }
 
 >T
