@@ -92,6 +92,10 @@ board                   = esp32
 #undef USE_SHUTTER
 #endif
 
+#ifdef USE_DEEPSLEEP
+#undef USE_DEEPSLEEP
+#endif
+
 #ifdef USE_EXS_DIMMER
 #undef USE_EXS_DIMMER
 #endif
@@ -119,6 +123,18 @@ board                   = esp32
 #ifdef SHELLY_FW_UPGRADE
 #undef SHELLY_FW_UPGRADE
 #endif
+
+#undef USE_MY92X1                               // Add support for MY92X1 RGBCW led controller as used in Sonoff B1, Ailight and Lohas
+#undef USE_SM16716                              // Add support for SM16716 RGB LED controller (+0k7 code)
+#undef USE_SM2135                               // Add support for SM2135 RGBCW led control as used in Action LSC (+0k6 code)
+#undef USE_SM2335                               // Add support for SM2335 RGBCW led control as used in SwitchBot Color Bulb (+0k7 code)
+#undef USE_BP1658CJ                             // Add support for BP1658CJ RGBCW led control as used in Orein OS0100411267 Bulb
+#undef USE_BP5758D                              // Add support for BP5758D RGBCW led control as used in some Tuya lightbulbs (+0k8 code)
+#undef USE_SONOFF_L1                            // Add support for Sonoff L1 led control
+#undef USE_ELECTRIQ_MOODL                       // Add support for ElectriQ iQ-wifiMOODL RGBW LED controller (+0k3 code)
+#undef USE_LIGHT_PALETTE                        // Add support for color palette (+0k7 code)
+#undef USE_LIGHT_VIRTUAL_CT                     // Add support for Virtual White Color Temperature (+1.1k code)
+#undef USE_DGR_LIGHT_SEQUENCE                   // Add support for device group light sequencing (requires USE_DEVICE_GROUPS) (+0k2 code)
 
 #ifdef USE_DS18x20
 #undef USE_DS18x20
@@ -184,12 +200,17 @@ board                   = esp32
 #undef USE_IR_RECEIVE
 #endif
 
+// -- MQTT - Home Assistant Discovery -------------
+#define USE_HOME_ASSISTANT                                   // Enable Home Assistant Discovery Support (+12k code, +6 bytes mem)
+    #define HOME_ASSISTANT_DISCOVERY_PREFIX   "homeassistant"  // Home Assistant discovery prefix
+    #define HOME_ASSISTANT_LWT_TOPIC   "homeassistant/status"  // home Assistant Birth and Last Will Topic (default = homeassistant/status)
+    #define HOME_ASSISTANT_LWT_SUBSCRIBE    true               // Subscribe to Home Assistant Birth and Last Will Topic (default = true)
+
 //--Initialize SK6812 LED's -----------------------
 #undef USE_WS2812_HARDWARE
 #undef USE_WS2812_CTYPE
 #define USE_WS2812_HARDWARE  NEO_HW_SK6812     // Hardware type (NEO_HW_WS2812, NEO_HW_WS2812X, NEO_HW_WS2813, NEO_HW_SK6812, NEO_HW_LC8812, NEO_HW_APA106, NEO_HW_P9813)
 #define USE_WS2812_CTYPE     NEO_GRB           // Color type (NEO_RGB, NEO_GRB, NEO_BRG, NEO_RBG, NEO_RGBW, NEO_GRBW)
-
 
 //-- Location ---------------------------
 #ifdef LATITUDE
@@ -221,8 +242,8 @@ board                   = esp32
     #define SUPPORT_MQTT_EVENT                     // Support trigger event with MQTT subscriptions (+3k5 code)
     #define USE_SCRIPT_WEB_DISPLAY
     #define SCRIPT_POWER_SECTION
-    #define USE_SCRIPT_SUB_COMMAND 
-
+    #define USE_SCRIPT_SUB_COMMAND
+    #define USE_BUTTON_EVENT
 
 //-- TLS ---------------------------
 #ifndef USE_MQTT_TLS
@@ -237,6 +258,7 @@ board                   = esp32
 #define USE_MQTT_TLS_FORCE_EC_CIPHER
 #endif
 
+#define USE_MQTT_TLS_DROP_OLD_FINGERPRINT
 
 //-- Telegram Protocol ---------------------------
 #ifndef USE_TELEGRAM
@@ -251,7 +273,6 @@ board                   = esp32
 #ifndef USE_PING
 #define USE_PING
 #endif
-
 
 //-- MEEK MT3 ---------------------------
 #ifdef FIRMWARE_MT3
@@ -405,8 +426,6 @@ board                   = esp32
 #define USER_TEMPLATE "{\"NAME\":\"MEEK DD\",\"GPIO\":[0,0,1376,3232,608,640,160,225,352,161,353,224,2144,1],\"FLAG\":0,\"BASE\":18}"
 #endif
 
-
-
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
 #endif
@@ -425,48 +444,6 @@ board                   = esp32
 
 #define USE_I2C
 #define USE_SERIAL_BRIDGE
-#endif
-
-//-- MEEK ZIGBEE ESP8266 ---------------------------
-#ifdef FIRMWARE_ZIGBEE8266
-#warning **** Build: MEEK ZIGBEE ESP8266 ****
-#undef CODE_IMAGE_STR
-#define CODE_IMAGE_STR "MEEK ZIGBEE"
-
-#ifdef USE_SERIAL_BRIDGE
-#undef USE_SERIAL_BRIDGE
-#endif
-#define USE_SERIAL_BRIDGE
-
-#ifdef USE_TCP_BRIDGE
-#undef USE_TCP_BRIDGE
-#endif
-#define USE_TCP_BRIDGE
-
-#ifdef MODULE
-#undef MODULE
-#endif
-#define MODULE USER_MODULE
-
-#ifdef FALLBACK_MODULE
-#undef FALLBACK_MODULE
-#endif
-#define FALLBACK_MODULE USER_MODULE
-
-#ifdef ESP8266
-#define USER_TEMPLATE "{\"NAME\":\"MEEK ZIGBEE\",\"GPIO\":[480,1,1376,1,225,226,1,1,161,162,160,224,3840,1],\"FLAG\":0,\"BASE\":18}"
-#endif
-
-#ifdef USER_RULE1
-#undef USER_RULE1
-#endif
-#define USER_RULE1 "on System#Boot do PWMFrequency,4000 endon on power1#state=1 do Backlog0 led1,250,0,250; Buzzer1,5 endon on power1#state=0 do Backlog0 led1,100,100,100; Buzzer1,5 endon on power2#state=1 do Backlog0 led2,250,0,250; Buzzer1,5 endon on power2#state=0 do Backlog0 led2,100,100,100; Buzzer1,5 endon on power3#state=1 do Backlog0 led3,250,0,250; Buzzer1,5 endon on power3#state=0 do Backlog0 led3,100,100,100; Buzzer1,5 endon"
-
-#ifdef FRIENDLY_NAME
-#undef FRIENDLY_NAME
-#endif
-#define FRIENDLY_NAME "MEEK_ZIGBEE"
-#define USER_BACKLOG "Wifi 3;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;rule1 1"
 #endif
 
 //-- MEEK ZIGBEE ESP32 ---------------------------
@@ -491,7 +468,7 @@ board                   = esp32
 #define USE_ZIGBEE
 
 #undef WS2812_LEDS
-#define WS2812_LEDS            4
+#define WS2812_LEDS            4    //Amount of LED's
 
 #ifdef MODULE
 #undef MODULE
@@ -504,21 +481,18 @@ board                   = esp32
 #define FALLBACK_MODULE USER_MODULE
 
 #ifdef ESP32
-#define USER_TEMPLATE "{\"NAME\":\"Meek Zigbee\",\"GPIO\":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,1,0,0,1],\"FLAG\":0,\"BASE\":1}"
+#define USER_TEMPLATE "{\"NAME\":\"Meek Zigbee\",\"GPIO\":[1,1,1,1,1,1,1,1,1,1,1,1,130,1,1,1376,0,5793,3584,3552,0,32,480,1,0,0,0,0,1,33,1,1,1,0,0,1],\"FLAG\":0,\"BASE\":1}"
 #endif
 
-
-#undef USE_RULES 
-#define USE_SCRIPT                               // Add support for script (+17k code)
-  #define USE_SCRIPT_FATFS 4                     // Script: Add FAT FileSystem Support
-  #define SUPPORT_MQTT_EVENT                     // Support trigger event with MQTT subscriptions (+3k5 code)
-
+//-- Zigbee Script ---------------------------
+#define START_SCRIPT_FROM_BOOT
+#define PRECONFIGURED_SCRIPT ">D\nButton1=0\nButton2=0\nButton3=0\n\n>B\n->power4 0\n->PWMFrequency 4000\n->led1 101010\n->led2 101010\n->led3 101010\n->led4 101010\ndelay(1000)\n->led1 100000\ndelay(1000)\n->led2 100000\ndelay(1000)\n->led3 100000\ndelay(1000)\n->led4 100000\ndelay(1000)\n->led1 101010\n->led2 101010\n->led3 101010\n->led4 101010\n\n>b\nButton1=bt[1]\nButton2=bt[2]\nButton3=bt[3]\n\nif Button1==1\nthen ->scheme 12\n->buzzer 37 1 15\nelse\n->scheme 0\nendif\n\nif Button3==1\nthen ->ZbPermitJoin 1\nendif"
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
 #endif
 #define FRIENDLY_NAME "Zigbee Gateway"
-#define USER_BACKLOG "Wifi 3;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1"
+#define USER_BACKLOG "Wifi 3;script 1;SetOption1 1;SetOption13 1;SetOption111 1;SwitchMode1 15;SwitchMode2 15;SwitchMode3 15"
 #endif
 
 #endif  // _USER_CONFIG_OVERRIDE_H_
