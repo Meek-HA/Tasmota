@@ -28,13 +28,21 @@ board = esp8266_4M2M
 [env:tasmota-zigbee32]
 extends                 = env:tasmota32_base
 build_flags             = ${env:tasmota32_base.build_flags} -DFIRMWARE_ZIGBEE32
-board                   = esp32_4M
+board                   = esp32
 
 -------------------------------------------
 */
 
 #ifndef _USER_CONFIG_OVERRIDE_H_
 #define _USER_CONFIG_OVERRIDE_H_
+
+/*
+#undef  STA_SSID1
+#define STA_SSID1         "Wifi"             // [Ssid1] Wifi SSID
+
+#undef  STA_PASS1
+#define STA_PASS1         "Password"     // [Password1] Wifi password
+*/
 
 #ifdef ROTARY_V1
 #undef ROTARY_V1
@@ -176,11 +184,12 @@ board                   = esp32_4M
 #undef USE_IR_RECEIVE
 #endif
 
-//-- Enable MQTT Event ---------------------------
-#ifdef SUPPORT_MQTT_EVENT
-#undef SUPPORT_MQTT_EVENT
-#endif
-#define SUPPORT_MQTT_EVENT
+//--Initialize SK6812 LED's -----------------------
+#undef USE_WS2812_HARDWARE
+#undef USE_WS2812_CTYPE
+#define USE_WS2812_HARDWARE  NEO_HW_SK6812     // Hardware type (NEO_HW_WS2812, NEO_HW_WS2812X, NEO_HW_WS2813, NEO_HW_SK6812, NEO_HW_LC8812, NEO_HW_APA106, NEO_HW_P9813)
+#define USE_WS2812_CTYPE     NEO_GRB           // Color type (NEO_RGB, NEO_GRB, NEO_BRG, NEO_RBG, NEO_RGBW, NEO_GRBW)
+
 
 //-- Location ---------------------------
 #ifdef LATITUDE
@@ -193,54 +202,56 @@ board                   = esp32_4M
 #endif
 #define LONGITUDE 3.61480
 
-//-- Rules ---------------------------
+//-- Disable Rules & extensions  ---------------------------
 #ifdef USE_RULES
 #undef USE_RULES
 #endif
-#define USE_RULES
 
 #ifdef USE_EXPRESSION
 #undef USE_EXPRESSION
 #endif
-#define USE_EXPRESSION
 
 #ifdef SUPPORT_IF_STATEMENT
 #undef SUPPORT_IF_STATEMENT
 #endif
-#define SUPPORT_IF_STATEMENT
+
+//-- Enable script & extensions  ---------------------------
+#define USE_SCRIPT                               // Add support for script (+17k code)
+    #define USE_SCRIPT_FATFS 4                     // Script: Add FAT FileSystem Support
+    #define SUPPORT_MQTT_EVENT                     // Support trigger event with MQTT subscriptions (+3k5 code)
+    #define USE_SCRIPT_WEB_DISPLAY
+    #define SCRIPT_POWER_SECTION
+    #define USE_SCRIPT_SUB_COMMAND 
+
 
 //-- TLS ---------------------------
-#ifdef USE_MQTT_TLS
-#undef USE_MQTT_TLS
-#endif
+#ifndef USE_MQTT_TLS
 #define USE_MQTT_TLS
-
-#ifdef USE_MQTT_TLS_CA_CERT
-#undef USE_MQTT_TLS_CA_CERT
 #endif
+
+#ifndef USE_MQTT_TLS_CA_CERT
 #define USE_MQTT_TLS_CA_CERT
-
-#ifdef USE_MQTT_TLS_FORCE_EC_CIPHER
-#undef USE_MQTT_TLS_FORCE_EC_CIPHER
 #endif
+
+#ifndef USE_MQTT_TLS_FORCE_EC_CIPHER
 #define USE_MQTT_TLS_FORCE_EC_CIPHER
+#endif
+
 
 //-- Telegram Protocol ---------------------------
-#ifdef USE_TELEGRAM
-#undef USE_TELEGRAM
-#endif
+#ifndef USE_TELEGRAM
 #define USE_TELEGRAM
-
-#ifdef USE_TELEGRAM_FINGERPRINT
-#undef USE_TELEGRAM_FINGERPRINT
 #endif
+
+#ifndef USE_TELEGRAM_FINGERPRINT
 #define USE_TELEGRAM_FINGERPRINT "\xB2\x72\x47\xA6\x69\x8C\x3C\x69\xF9\x58\x6C\xF3\x60\x02\xFB\x83\xFA\x8B\x1F\x23"
+#endif
 
 // -- Ping ----------------------------------------
-#ifdef USE_PING
-#undef USE_PING
-#endif
+#ifndef USE_PING
 #define USE_PING
+#endif
+
 
 //-- MEEK MT3 ---------------------------
 #ifdef FIRMWARE_MT3
@@ -267,17 +278,15 @@ board                   = esp32_4M
 #define USER_TEMPLATE "{\"NAME\":\"MEEK MT3\",\"GPIO\":[480,1,1376,1,224,225,1,1,161,162,160,226,227,1],\"FLAG\":0,\"BASE\":18}"
 #endif
 
-#ifdef USER_RULE1
-#undef USER_RULE1
-#endif
-#define USER_RULE1 "on System#Boot do backlog power4 0;led1 200,0,0;led2 200,0,0;led3 200,0,0;color1 1;delay 100;Fade 1;speed 10;color1 12;PWMFrequency,4000;delay 100;power4 1;Fade 0 endon on power1#state=1 do Backlog0 led1,250,0,250; Buzzer1,5 endon on power1#state=0 do Backlog0 led1,100,100,100; Buzzer1,5 endon on power2#state=1 do Backlog0 led2,250,0,250; Buzzer1,5 endon on power2#state=0 do Backlog0 led2,100,100,100; Buzzer1,5 endon on power3#state=1 do Backlog0 led3,250,0,250; Buzzer1,5 endon on power3#state=0 do Backlog0 led3,100,100,100; Buzzer1,5 endon"
+#define START_SCRIPT_FROM_BOOT
+#define PRECONFIGURED_SCRIPT ">D\n>B\nsmlj=0\n;->sensor53 r\n>R\nsmlj=0\n>S\nif upsecs>30\nthen\nsmlj=1\nendif\n>M 1\n+1,26,mN2,16,9600,Solar,32,10,01040008,0104000B,0104000E\n1,=h------------BATTERY------------\n1,01040SSss@i0:327.68,Voltage,V,Voltage,3\n1,01040SSss@i1:413.94,Current,A,Current,3\n1,01040ssxx@i2:100,Temp,°C,Temperature,2\n#"
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
 #endif
 #define FRIENDLY_NAME "Touch 3"
 
-#define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Center;FriendlyName3 Right;FriendlyName4 $Touch Control;FriendlyName5 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Center;WebButton3 Right;WebButton4 Touch;WebButton5 RGB"
+#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Center;FriendlyName3 Right;FriendlyName4 $Touch Control;FriendlyName5 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Center;WebButton3 Right;WebButton4 Touch;WebButton5 RGB"
 #endif
  
 //-- MEEK MT2 ---------------------------
@@ -318,6 +327,44 @@ board                   = esp32_4M
 #define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB"
 #endif
 
+//-- MEEK MT1 ---------------------------
+#ifdef FIRMWARE_MT2
+#warning **** Build: MEEK MT1 ****
+#undef CODE_IMAGE_STR
+#define CODE_IMAGE_STR "MEEK MT1"
+
+#ifdef PROJECT
+#undef PROJECT
+#endif
+#define PROJECT "MEEK-MT1"
+
+#ifdef MODULE
+#undef MODULE
+#endif
+#define MODULE USER_MODULE
+
+#ifdef FALLBACK_MODULE
+#undef FALLBACK_MODULE
+#endif
+#define FALLBACK_MODULE USER_MODULE
+
+#ifdef ESP8266
+#define USER_TEMPLATE "{\"NAME\":\"MEEK MT1\",\"GPIO\":[480,1,1376,1,225,224,1,1,0,161,160,0,226,1],\"FLAG\":0,\"BASE\":18}"
+#endif
+
+#ifdef USER_RULE1
+#undef USER_RULE1
+#endif
+#define USER_RULE1 "on System#Boot do backlog power3 0;led1 200,0,0;led2 200,0,0;color1 1;delay 100;Fade 1;speed 10;color1 12;PWMFrequency,4000;delay 100;power3 1;Fade 0 endon on power1#state=1 do Backlog0 led1,250,0,250; Buzzer1,5 endon on power1#state=0 do Backlog0 led1,100,100,100; Buzzer1,5 endon on power2#state=1 do Backlog0 led2,250,0,250; Buzzer1,5 endon on power2#state=0 do Backlog0 led2,100,100,100; Buzzer1,5 endon"
+
+#ifdef FRIENDLY_NAME
+#undef FRIENDLY_NAME
+#endif
+#define FRIENDLY_NAME "Touch 1"
+
+#define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB"
+#endif
+
 //-- MEEK DD ---------------------------
 #ifdef FIRMWARE_DD
 #warning **** Build: MEEK DD ****
@@ -349,14 +396,16 @@ board                   = esp32_4M
 #endif
 #define USE_TCP_BRIDGE
 
+//-- Smart Meter Interface ---------------------------
+#ifndef USE_SML_M
+#define USE_SML_M
+#endif
+
 #ifdef ESP8266
 #define USER_TEMPLATE "{\"NAME\":\"MEEK DD\",\"GPIO\":[0,0,1376,3232,608,640,160,225,352,161,353,224,2144,1],\"FLAG\":0,\"BASE\":18}"
 #endif
 
-#ifdef USER_RULE1
-#undef USER_RULE1
-#endif
-#define USER_RULE1 "on System#Boot do mp3volume 5 endon on Power2#state=1 do backlog mp3play 1;led1,10,0,0 endon on Power2#state=0 do led1,0,0,10 endon"
+
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
@@ -424,19 +473,25 @@ board                   = esp32_4M
 #ifdef FIRMWARE_ZIGBEE32
 #warning **** Build: MEEK ZIGBEE ESP32 ****
 #undef CODE_IMAGE_STR
-#define CODE_IMAGE_STR "MEEK ZIGBEE"
+#define CODE_IMAGE_STR "Meek"
 
 #ifdef USE_SERIAL_BRIDGE
 #undef USE_SERIAL_BRIDGE
 #endif
 #define USE_SERIAL_BRIDGE
 
-#define USE_ZIGBEE     
-
 #ifdef USE_TCP_BRIDGE
 #undef USE_TCP_BRIDGE
 #endif
 #define USE_TCP_BRIDGE
+
+#ifdef USE_ZIGBEE
+#undef USE_ZIGBEE
+#endif
+#define USE_ZIGBEE
+
+#undef WS2812_LEDS
+#define WS2812_LEDS            4
 
 #ifdef MODULE
 #undef MODULE
@@ -449,19 +504,21 @@ board                   = esp32_4M
 #define FALLBACK_MODULE USER_MODULE
 
 #ifdef ESP32
-#define USER_TEMPLATE "{\"NAME\":\"MEEK ZIGBEE\",\"GPIO\":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,1,0,0,1],\"FLAG\":0,\"BASE\":1}"
+#define USER_TEMPLATE "{\"NAME\":\"Meek Zigbee\",\"GPIO\":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,1,0,0,1],\"FLAG\":0,\"BASE\":1}"
 #endif
 
-#ifdef USER_RULE1
-#undef USER_RULE1
-#endif
-#define USER_RULE1 "on System#Boot do PWMFrequency,4000 endon on power1#state=1 do Backlog0 led1,250,0,250; Buzzer1,5 endon on power1#state=0 do Backlog0 led1,100,100,100; Buzzer1,5 endon on power2#state=1 do Backlog0 led2,250,0,250; Buzzer1,5 endon on power2#state=0 do Backlog0 led2,100,100,100; Buzzer1,5 endon on power3#state=1 do Backlog0 led3,250,0,250; Buzzer1,5 endon on power3#state=0 do Backlog0 led3,100,100,100; Buzzer1,5 endon"
+
+#undef USE_RULES 
+#define USE_SCRIPT                               // Add support for script (+17k code)
+  #define USE_SCRIPT_FATFS 4                     // Script: Add FAT FileSystem Support
+  #define SUPPORT_MQTT_EVENT                     // Support trigger event with MQTT subscriptions (+3k5 code)
+
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
 #endif
-#define FRIENDLY_NAME "MEEK_ZIGBEE"
-#define USER_BACKLOG "Wifi 3;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;rule1 1"
+#define FRIENDLY_NAME "Zigbee Gateway"
+#define USER_BACKLOG "Wifi 3;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1"
 #endif
 
 #endif  // _USER_CONFIG_OVERRIDE_H_
