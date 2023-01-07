@@ -1,0 +1,30 @@
+>D
+
+>B
+->power4 0
+->PWMFrequency 4000
+->led1 101010
+->led2 101010
+->led3 101010
+->led4 101010
+delay(1000)
+->led1 100000
+delay(1000)
+->led2 100000
+delay(1000)
+->led3 100000
+delay(1000)
+->led4 100000
+delay(1000)
+->led1 101010
+->led2 101010
+->led3 101010
+->led4 101010
+
+>S
+if sw[0]==1
+then ->scheme 12
+->buzzer 1
+else
+->scheme 0
+endif
