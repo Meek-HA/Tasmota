@@ -278,12 +278,7 @@ board                   = esp32
 #ifdef FIRMWARE_MT3
 #warning **** Build: MEEK MT3 ****
 #undef CODE_IMAGE_STR
-#define CODE_IMAGE_STR "MEEK MT3"
-
-#ifdef PROJECT
-#undef PROJECT
-#endif
-#define PROJECT "MEEK-MT3"
+#define CODE_IMAGE_STR "Meek"
 
 #ifdef MODULE
 #undef MODULE
@@ -296,11 +291,14 @@ board                   = esp32
 #define FALLBACK_MODULE USER_MODULE
 
 #ifdef ESP8266
-#define USER_TEMPLATE "{\"NAME\":\"MEEK MT3\",\"GPIO\":[480,1,1376,1,224,225,1,1,161,162,160,226,227,1],\"FLAG\":0,\"BASE\":18}"
+#define USER_TEMPLATE "{\"NAME\":\"Meek MT3\",\"GPIO\":[480,1,1376,1,224,225,1,1,161,162,160,226,227,1],\"FLAG\":0,\"BASE\":18}"
 #endif
 
 #define START_SCRIPT_FROM_BOOT
-#define PRECONFIGURED_SCRIPT ">D\n>B\nsmlj=0\n;->sensor53 r\n>R\nsmlj=0\n>S\nif upsecs>30\nthen\nsmlj=1\nendif\n>M 1\n+1,26,mN2,16,9600,Solar,32,10,01040008,0104000B,0104000E\n1,=h------------BATTERY------------\n1,01040SSss@i0:327.68,Voltage,V,Voltage,3\n1,01040SSss@i1:413.94,Current,A,Current,3\n1,01040ssxx@i2:100,Temp,°C,Temperature,2\n#"
+#define PRECONFIGURED_SCRIPT ">D\nout1=0\nout2=0\nout3=0\n\n>B\n->power4 0\n->PWMFrequency 4000\n->led1 101010\n->led2 101010\n->led3 101010\ndelay(1000)\n->led1 100000\ndelay(1000)\n->led2 100000\ndelay(1000)\n->led3 100000\ndelay(1000)\n->power4 1\n->led1 101010\n->led2 101010\n->led3 101010\nif pwr[1]==1\nthen ->led1 100010\nout1=1\nendif\nif pwr[2]==1\nthen ->led2 100010\nout2=1\nendif\nif pwr[3]==1\nthen ->led3 100010\nout3=1\nendif\n\n>P\nif pwr[3]!=out3\nthen\nif out3==0\nthen\n->led3 990099\n->buzzer 1\n->led3 500050\nout3=1\nbreak\nelse\n->led3 999999\n->buzzer 1\n->led3 101010\nout3=0\nbreak\nendif\nendif\n\nif pwr[2]!=out2\nthen\nif out2==0\nthen\n->led2 990099\n->buzzer 1\n->led2 500050\nout2=1\nbreak\nelse\n->led2 999999\n->buzzer 1\n->led2 101010\nout2=0\nbreak\nendif\nendif\n\nif pwr[1]!=out1\nthen\nif out1==0\nthen\n->led1 990099\n->buzzer 1\n->led1 500050\nout1=1\nbreak\nelse\n->led1 999999\n->buzzer 1\n->led1 101010\nout1=0\nbreak\nendif\nendif\n"
+
+#undef WS2812_LEDS
+#define WS2812_LEDS            3    //Amount of LED's
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
