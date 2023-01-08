@@ -31,12 +31,12 @@
         "id": "87bbf929.023ef8",
         "type": "tcp out",
         "z": "d6a10370.54618",
+        "name": "",
         "host": "127.0.0.1",
         "port": "1886",
         "beserver": "server",
         "base64": false,
         "end": false,
-        "name": "",
         "x": 890,
         "y": 280,
         "wires": []
@@ -179,25 +179,126 @@
         ]
     },
     {
+        "id": "5296e20d6c830e47",
+        "type": "exec",
+        "z": "d6a10370.54618",
+        "command": "touch /var/www/html/admin/command/Zigbee-Start",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "Start ZIgbee2MQTT",
+        "x": 520,
+        "y": 340,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "fb5218cda6f54d71",
+        "type": "mqtt in",
+        "z": "d6a10370.54618",
+        "name": "Zigbee Status",
+        "topic": "tele/Meek_Zigbee/LWT",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "8ce31000.7fac3",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 360,
+        "wires": [
+            [
+                "6e33f6483024b4ed"
+            ]
+        ]
+    },
+    {
+        "id": "6e33f6483024b4ed",
+        "type": "switch",
+        "z": "d6a10370.54618",
+        "name": "Online/Offline",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Online",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Offline",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 300,
+        "y": 360,
+        "wires": [
+            [
+                "5296e20d6c830e47"
+            ],
+            [
+                "a8be88589ea4376d"
+            ]
+        ]
+    },
+    {
+        "id": "a8be88589ea4376d",
+        "type": "exec",
+        "z": "d6a10370.54618",
+        "command": "touch /var/www/html/admin/command/Zigbee-Stop",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "Stop Zigbee2MQTT",
+        "x": 510,
+        "y": 380,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
         "id": "8ce31000.7fac3",
         "type": "mqtt-broker",
-        "name": "MEEK-IO Mosquitto",
+        "name": "Meek-IO Mosquitto",
         "broker": "127.0.0.1",
         "port": "1883",
         "tls": "",
         "clientid": "",
+        "autoConnect": true,
         "usetls": false,
         "compatmode": false,
+        "protocolVersion": "4",
         "keepalive": "60",
         "cleansession": true,
         "birthTopic": "",
         "birthQos": "0",
         "birthPayload": "",
+        "birthMsg": {},
         "closeTopic": "",
         "closeQos": "0",
         "closePayload": "",
+        "closeMsg": {},
         "willTopic": "",
         "willQos": "0",
-        "willPayload": ""
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
     }
 ]
