@@ -201,10 +201,12 @@ board                   = esp32
 #endif
 
 // -- MQTT - Home Assistant Discovery -------------
+/* Does not work anymore 
 #define USE_HOME_ASSISTANT                                   // Enable Home Assistant Discovery Support (+12k code, +6 bytes mem)
     #define HOME_ASSISTANT_DISCOVERY_PREFIX   "homeassistant"  // Home Assistant discovery prefix
     #define HOME_ASSISTANT_LWT_TOPIC   "homeassistant/status"  // home Assistant Birth and Last Will Topic (default = homeassistant/status)
     #define HOME_ASSISTANT_LWT_SUBSCRIBE    true               // Subscribe to Home Assistant Birth and Last Will Topic (default = true)
+*/
 
 //--Initialize SK6812 LED's -----------------------
 #undef USE_WS2812_HARDWARE
@@ -305,19 +307,14 @@ board                   = esp32
 #endif
 #define FRIENDLY_NAME "Touch 3"
 
-#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Center;FriendlyName3 Right;FriendlyName4 $Touch Control;FriendlyName5 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Center;WebButton3 Right;WebButton4 Touch;WebButton5 RGB"
+#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;FriendlyName1 Left;FriendlyName2 Center;FriendlyName3 Right;FriendlyName4 $Touch Control;FriendlyName5 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Center;WebButton3 Right;WebButton4 Touch;WebButton5 RGB"
 #endif
- 
+
 //-- MEEK MT2 ---------------------------
 #ifdef FIRMWARE_MT2
 #warning **** Build: MEEK MT2 ****
 #undef CODE_IMAGE_STR
-#define CODE_IMAGE_STR "MEEK MT2"
-
-#ifdef PROJECT
-#undef PROJECT
-#endif
-#define PROJECT "MEEK-MT2"
+#define CODE_IMAGE_STR "Meek"
 
 #ifdef MODULE
 #undef MODULE
@@ -330,24 +327,26 @@ board                   = esp32
 #define FALLBACK_MODULE USER_MODULE
 
 #ifdef ESP8266
-#define USER_TEMPLATE "{\"NAME\":\"MEEK MT2\",\"GPIO\":[480,1,1376,1,225,224,1,1,0,161,160,0,226,1],\"FLAG\":0,\"BASE\":18}"
+#define USER_TEMPLATE "{\"NAME\":\"Meek MT2\",\"GPIO\":[480,1,1376,1,225,224,1,1,0,161,160,0,226,1],\"FLAG\":0,\"BASE\":18}"
 #endif
 
-#ifdef USER_RULE1
-#undef USER_RULE1
-#endif
-#define USER_RULE1 "on System#Boot do backlog power3 0;led1 200,0,0;led2 200,0,0;color1 1;delay 100;Fade 1;speed 10;color1 12;PWMFrequency,4000;delay 100;power3 1;Fade 0 endon on power1#state=1 do Backlog0 led1,250,0,250; Buzzer1,5 endon on power1#state=0 do Backlog0 led1,100,100,100; Buzzer1,5 endon on power2#state=1 do Backlog0 led2,250,0,250; Buzzer1,5 endon on power2#state=0 do Backlog0 led2,100,100,100; Buzzer1,5 endon"
+#define START_SCRIPT_FROM_BOOT
+#define PRECONFIGURED_SCRIPT ">D\nout1=0\nout2=0\nout3=0\n\n>B\n->power4 0\n->PWMFrequency 4000\n->led1 101010\n->led2 101010\n->led3 101010\ndelay(1000)\n->led1 100000\ndelay(1000)\n->led2 100000\ndelay(1000)\n->led3 100000\ndelay(1000)\n->power4 1\n->led1 101010\n->led2 101010\n->led3 101010\nif pwr[1]==1\nthen ->led1 100010\nout1=1\nendif\nif pwr[2]==1\nthen ->led2 100010\nout2=1\nendif\nif pwr[3]==1\nthen ->led3 100010\nout3=1\nendif\n\n>P\nif pwr[3]!=out3\nthen\nif out3==0\nthen\n->led3 990099\n->buzzer 1\n->led3 500050\nout3=1\nbreak\nelse\n->led3 999999\n->buzzer 1\n->led3 101010\nout3=0\nbreak\nendif\nendif\n\nif pwr[2]!=out2\nthen\nif out2==0\nthen\n->led2 990099\n->buzzer 1\n->led2 500050\nout2=1\nbreak\nelse\n->led2 999999\n->buzzer 1\n->led2 101010\nout2=0\nbreak\nendif\nendif\n\nif pwr[1]!=out1\nthen\nif out1==0\nthen\n->led1 990099\n->buzzer 1\n->led1 500050\nout1=1\nbreak\nelse\n->led1 999999\n->buzzer 1\n->led1 101010\nout1=0\nbreak\nendif\nendif\n"
+
+#undef WS2812_LEDS
+#define WS2812_LEDS            2    //Amount of LED's
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
 #endif
 #define FRIENDLY_NAME "Touch 2"
 
-#define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB"
+#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB"
 #endif
 
+
 //-- MEEK MT1 ---------------------------
-#ifdef FIRMWARE_MT2
+#ifdef FIRMWARE_MT1
 #warning **** Build: MEEK MT1 ****
 #undef CODE_IMAGE_STR
 #define CODE_IMAGE_STR "MEEK MT1"
@@ -393,7 +392,7 @@ board                   = esp32
 #ifdef PROJECT
 #undef PROJECT
 #endif
-#define PROJECT "MEEK-DD"
+#define PROJECT "Meek_DD"
 
 #ifdef MODULE
 #undef MODULE
@@ -420,16 +419,7 @@ board                   = esp32
 #define USE_SML_M
 #endif
 
-#ifdef ESP8266
-#define USER_TEMPLATE "{\"NAME\":\"MEEK DD\",\"GPIO\":[0,0,1376,3232,608,640,160,225,352,161,353,224,2144,1],\"FLAG\":0,\"BASE\":18}"
-#endif
-
-#ifdef FRIENDLY_NAME
-#undef FRIENDLY_NAME
-#endif
-#define FRIENDLY_NAME "MEEK DD"
-#define USER_BACKLOG "SwitchMode1 4;SwitchMode2 4;PulseTime2 25;SerialDelimiter 10;SerialSend 1;rule1 1;Wifi 3;FriendlyName1 Relay;WebButton1 Relay;FriendlyName2 DoorBell;WebButton2 DoorBell;FriendlyName3 $RGB;WebButton3 RGB"
-
+//-- DFPlayer minie ---------------------------
 #ifdef USE_MP3_PLAYER
 #undef USE_MP3_PLAYER
 #endif
@@ -442,7 +432,26 @@ board                   = esp32
 
 #define USE_I2C
 #define USE_SERIAL_BRIDGE
+
+#undef WS2812_LEDS
+#define WS2812_LEDS            250    //Amount of LED's
+
+#ifdef ESP8266
+#define USER_TEMPLATE "{\"NAME\":\"Meek DD\",\"GPIO\":[0,0,1376,3232,608,640,160,225,352,161,353,224,2144,1],\"FLAG\":0,\"BASE\":18}"
 #endif
+
+#define START_SCRIPT_FROM_BOOT
+#define PRECONFIGURED_SCRIPT ">D\r\nmelody=1\r\nvolume=10\r\ndoorbell=0\r\n>W\r\nsl(1 25 melody \"1\" \"Melody\" \"25\")\r\nsl(0 100 volume \"0\" \"Volume\" \"100\")\r\nMelody:{m} %0melody%\r\nVolume:{m} %0volume%\r\n>BS\r\n+>subscribe volume, cmnd/%topic%/volume\r\n+>subscribe melody, cmnd/%topic%/melody\r\n>S\r\nif chg[volume]> 0 {\r\n=>publish stat/%topic%/RESULT {\"volume\":\"%0volume%\"}\r\n=>mp3volume %volume%\r\nprint Volume changed to level: %0volume%\r\n}\r\nif chg[melody]> 0 {\r\n=>publish stat/%topic%/RESULT {\"melody\":\"%0melody%\"}\r\n=>mp3track %melody%\r\nprint Melody selection updated to song: %0melody%\r\n}\r\n\r\n>T\r\ndoorbell=pwr[2]\r\nif doorbell==1\r\nthen\r\n=>mp3play %melody%\r\nprint Someone is at the door!\r\nendif"
+
+#ifdef FRIENDLY_NAME
+#undef FRIENDLY_NAME
+#endif
+#define FRIENDLY_NAME "Meek DD"
+#define USER_BACKLOG "SwitchMode1 4;SwitchMode2 4;PulseTime2 25;SerialDelimiter 10;SerialSend 1;Wifi 3;FriendlyName1 Relay;WebButton1 Relay;FriendlyName2 DoorBell;WebButton2 DoorBell;FriendlyName3 $RGB;WebButton3 RGB"
+
+#endif
+
+
 
 //-- MEEK ZIGBEE ESP32 ---------------------------
 #ifdef FIRMWARE_ZIGBEE32
@@ -454,6 +463,16 @@ board                   = esp32
 #undef USE_SERIAL_BRIDGE
 #endif
 #define USE_SERIAL_BRIDGE
+
+#ifdef PROJECT
+#undef PROJECT
+#endif
+#define PROJECT "Meek_Zigbee"
+
+#ifdef MQTT_TOPIC
+#undef MQTT_TOPIC
+#endif
+#define MQTT_TOPIC             PROJECT
 
 #ifdef USE_TCP_BRIDGE
 #undef USE_TCP_BRIDGE
