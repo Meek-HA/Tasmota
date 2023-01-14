@@ -200,14 +200,6 @@ board                   = esp32
 #undef USE_IR_RECEIVE
 #endif
 
-// -- MQTT - Home Assistant Discovery -------------
-/* Does not work anymore 
-#define USE_HOME_ASSISTANT                                   // Enable Home Assistant Discovery Support (+12k code, +6 bytes mem)
-    #define HOME_ASSISTANT_DISCOVERY_PREFIX   "homeassistant"  // Home Assistant discovery prefix
-    #define HOME_ASSISTANT_LWT_TOPIC   "homeassistant/status"  // home Assistant Birth and Last Will Topic (default = homeassistant/status)
-    #define HOME_ASSISTANT_LWT_SUBSCRIBE    true               // Subscribe to Home Assistant Birth and Last Will Topic (default = true)
-*/
-
 //--Initialize SK6812 LED's -----------------------
 #undef USE_WS2812_HARDWARE
 #undef USE_WS2812_CTYPE
@@ -297,7 +289,7 @@ board                   = esp32
 #endif
 
 #define START_SCRIPT_FROM_BOOT
-#define PRECONFIGURED_SCRIPT ">D\nout1=0\nout2=0\nout3=0\n\n>B\n->power4 0\n->PWMFrequency 4000\n->led1 101010\n->led2 101010\n->led3 101010\ndelay(1000)\n->led1 100000\ndelay(1000)\n->led2 100000\ndelay(1000)\n->led3 100000\ndelay(1000)\n->power4 1\n->led1 101010\n->led2 101010\n->led3 101010\nif pwr[1]==1\nthen ->led1 100010\nout1=1\nendif\nif pwr[2]==1\nthen ->led2 100010\nout2=1\nendif\nif pwr[3]==1\nthen ->led3 100010\nout3=1\nendif\n\n>P\nif pwr[3]!=out3\nthen\nif out3==0\nthen\n->led3 990099\n->buzzer 1\n->led3 500050\nout3=1\nbreak\nelse\n->led3 999999\n->buzzer 1\n->led3 101010\nout3=0\nbreak\nendif\nendif\n\nif pwr[2]!=out2\nthen\nif out2==0\nthen\n->led2 990099\n->buzzer 1\n->led2 500050\nout2=1\nbreak\nelse\n->led2 999999\n->buzzer 1\n->led2 101010\nout2=0\nbreak\nendif\nendif\n\nif pwr[1]!=out1\nthen\nif out1==0\nthen\n->led1 990099\n->buzzer 1\n->led1 500050\nout1=1\nbreak\nelse\n->led1 999999\n->buzzer 1\n->led1 101010\nout1=0\nbreak\nendif\nendif\n"
+#define PRECONFIGURED_SCRIPT ">D\nout1=0\nout2=0\nout3=0\n\n>B\n->power4 0\n->PWMFrequency 4000\n->led1 101010\n->led2 101010\n->led3 101010\ndelay(1000)\n->led1 100000\ndelay(1000)\n->led2 100000\ndelay(1000)\n->led3 100000\ndelay(1000)\n->power4 1\n->led1 101010\n->led2 101010\n->led3 101010\nif pwr[1]==1\nthen ->led1 100010\nout1=1\nendif\nif pwr[2]==1\nthen ->led2 100010\nout2=1\nendif\nif pwr[3]==1\nthen ->led3 100010\nout3=1\nendif\n\n>P\nif pwr[3]!=out3\nthen\nif out3==0\nthen\n->led3 990099\n->buzzer 1\n->led3 100010\nout3=1\nbreak\nelse\n->led3 999999\n->buzzer 1\n->led3 101010\nout3=0\nbreak\nendif\nendif\n\nif pwr[2]!=out2\nthen\nif out2==0\nthen\n->led2 990099\n->buzzer 1\n->led2 100010\nout2=1\nbreak\nelse\n->led2 999999\n->buzzer 1\n->led2 101010\nout2=0\nbreak\nendif\nendif\n\nif pwr[1]!=out1\nthen\nif out1==0\nthen\n->led1 990099\n->buzzer 1\n->led1 100010\nout1=1\nbreak\nelse\n->led1 999999\n->buzzer 1\n->led1 101010\nout1=0\nbreak\nendif\nendif\n"
 
 #undef WS2812_LEDS
 #define WS2812_LEDS            3    //Amount of LED's
@@ -331,7 +323,8 @@ board                   = esp32
 #endif
 
 #define START_SCRIPT_FROM_BOOT
-#define PRECONFIGURED_SCRIPT ">D\nout1=0\nout2=0\nout3=0\n\n>B\n->power4 0\n->PWMFrequency 4000\n->led1 101010\n->led2 101010\n->led3 101010\ndelay(1000)\n->led1 100000\ndelay(1000)\n->led2 100000\ndelay(1000)\n->led3 100000\ndelay(1000)\n->power4 1\n->led1 101010\n->led2 101010\n->led3 101010\nif pwr[1]==1\nthen ->led1 100010\nout1=1\nendif\nif pwr[2]==1\nthen ->led2 100010\nout2=1\nendif\nif pwr[3]==1\nthen ->led3 100010\nout3=1\nendif\n\n>P\nif pwr[3]!=out3\nthen\nif out3==0\nthen\n->led3 990099\n->buzzer 1\n->led3 500050\nout3=1\nbreak\nelse\n->led3 999999\n->buzzer 1\n->led3 101010\nout3=0\nbreak\nendif\nendif\n\nif pwr[2]!=out2\nthen\nif out2==0\nthen\n->led2 990099\n->buzzer 1\n->led2 500050\nout2=1\nbreak\nelse\n->led2 999999\n->buzzer 1\n->led2 101010\nout2=0\nbreak\nendif\nendif\n\nif pwr[1]!=out1\nthen\nif out1==0\nthen\n->led1 990099\n->buzzer 1\n->led1 500050\nout1=1\nbreak\nelse\n->led1 999999\n->buzzer 1\n->led1 101010\nout1=0\nbreak\nendif\nendif\n"
+//----- https://jsonformatter.org/json-stringify-online -----
+#define PRECONFIGURED_SCRIPT ">D\nout1=0\nout2=0\nout3=0\n\n>B\n->power4 0\n->PWMFrequency 4000\n->led1 101010\n->led2 101010\n->led3 101010\ndelay(1000)\n->led1 100000\ndelay(1000)\n->led2 100000\ndelay(1000)\n->led3 100000\ndelay(1000)\n->power4 1\n->led1 101010\n->led2 101010\n->led3 101010\nif pwr[1]==1\nthen ->led1 100010\nout1=1\nendif\nif pwr[2]==1\nthen ->led2 100010\nout2=1\nendif\nif pwr[3]==1\nthen ->led3 100010\nout3=1\nendif\n\n>P\nif pwr[3]!=out3\nthen\nif out3==0\nthen\n->led3 990099\n->buzzer 1\n->led3 100010\nout3=1\nbreak\nelse\n->led3 999999\n->buzzer 1\n->led3 101010\nout3=0\nbreak\nendif\nendif\n\nif pwr[2]!=out2\nthen\nif out2==0\nthen\n->led2 990099\n->buzzer 1\n->led2 100010\nout2=1\nbreak\nelse\n->led2 999999\n->buzzer 1\n->led2 101010\nout2=0\nbreak\nendif\nendif\n\nif pwr[1]!=out1\nthen\nif out1==0\nthen\n->led1 990099\n->buzzer 1\n->led1 100010\nout1=1\nbreak\nelse\n->led1 999999\n->buzzer 1\n->led1 101010\nout1=0\nbreak\nendif\nendif\n"
 
 #undef WS2812_LEDS
 #define WS2812_LEDS            2    //Amount of LED's
@@ -344,17 +337,11 @@ board                   = esp32
 #define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB"
 #endif
 
-
 //-- MEEK MT1 ---------------------------
 #ifdef FIRMWARE_MT1
 #warning **** Build: MEEK MT1 ****
 #undef CODE_IMAGE_STR
-#define CODE_IMAGE_STR "MEEK MT1"
-
-#ifdef PROJECT
-#undef PROJECT
-#endif
-#define PROJECT "MEEK-MT1"
+#define CODE_IMAGE_STR "Meek"
 
 #ifdef MODULE
 #undef MODULE
@@ -367,20 +354,22 @@ board                   = esp32
 #define FALLBACK_MODULE USER_MODULE
 
 #ifdef ESP8266
-#define USER_TEMPLATE "{\"NAME\":\"MEEK MT1\",\"GPIO\":[480,1,1376,1,225,224,1,1,0,161,160,0,226,1],\"FLAG\":0,\"BASE\":18}"
+#define USER_TEMPLATE "{\"NAME\":\"Meek MT1\",\"GPIO\":[480,1,1376,1,0,224,1,1,160,0,0,0,225,1],\"FLAG\":0,\"BASE\":18}"
 #endif
 
-#ifdef USER_RULE1
-#undef USER_RULE1
-#endif
-#define USER_RULE1 "on System#Boot do backlog power3 0;led1 200,0,0;led2 200,0,0;color1 1;delay 100;Fade 1;speed 10;color1 12;PWMFrequency,4000;delay 100;power3 1;Fade 0 endon on power1#state=1 do Backlog0 led1,250,0,250; Buzzer1,5 endon on power1#state=0 do Backlog0 led1,100,100,100; Buzzer1,5 endon on power2#state=1 do Backlog0 led2,250,0,250; Buzzer1,5 endon on power2#state=0 do Backlog0 led2,100,100,100; Buzzer1,5 endon"
+#define START_SCRIPT_FROM_BOOT
+//----- https://jsonformatter.org/json-stringify-online -----
+#define PRECONFIGURED_SCRIPT ">D\r\nout1=0\r\n>B\r\n->power2 0\r\n->PWMFrequency 4000\r\n->led1 101010\r\ndelay(1000)\r\n->led1 100000\r\ndelay(1000)\r\n->power2 1\r\n->led1 101010\r\nif pwr[1]==1\r\nthen ->led1 100010\r\nout1=1\r\nendif\r\n\r\n>P\r\nif pwr[1]!=out1\r\nthen\r\nif out1==0\r\nthen\r\n->led1 990099\r\n->buzzer 1\r\n->led1 100010\r\nout1=1\r\nbreak\r\nelse\r\n->led1 999999\r\n->buzzer 1\r\n->led1 101010\r\nout1=0\r\nbreak\r\nendif\r\nendif"
+
+#undef WS2812_LEDS
+#define WS2812_LEDS            1    //Amount of LED's
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
 #endif
 #define FRIENDLY_NAME "Touch 1"
 
-#define USER_BACKLOG "SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;rule1 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB"
+#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;FriendlyName1 Button;FriendlyName2 $Touch Control;FriendlyName3 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Button;WebButton2 Touch;WebButton3 RGB"
 #endif
 
 //-- MEEK DD ---------------------------
@@ -441,6 +430,7 @@ board                   = esp32
 #endif
 
 #define START_SCRIPT_FROM_BOOT
+//----- https://jsonformatter.org/json-stringify-online -----
 #define PRECONFIGURED_SCRIPT ">D\r\nmelody=1\r\nvolume=10\r\ndoorbell=0\r\n>W\r\nsl(1 25 melody \"1\" \"Melody\" \"25\")\r\nsl(0 100 volume \"0\" \"Volume\" \"100\")\r\nMelody:{m} %0melody%\r\nVolume:{m} %0volume%\r\n>BS\r\n+>subscribe volume, cmnd/%topic%/volume\r\n+>subscribe melody, cmnd/%topic%/melody\r\n>S\r\nif chg[volume]> 0 {\r\n=>publish stat/%topic%/RESULT {\"volume\":\"%0volume%\"}\r\n=>mp3volume %volume%\r\nprint Volume changed to level: %0volume%\r\n}\r\nif chg[melody]> 0 {\r\n=>publish stat/%topic%/RESULT {\"melody\":\"%0melody%\"}\r\n=>mp3track %melody%\r\nprint Melody selection updated to song: %0melody%\r\n}\r\n\r\n>T\r\ndoorbell=pwr[2]\r\nif doorbell==1\r\nthen\r\n=>mp3play %melody%\r\nprint Someone is at the door!\r\nendif"
 
 #ifdef FRIENDLY_NAME
@@ -503,6 +493,7 @@ board                   = esp32
 
 //-- Zigbee Script ---------------------------
 #define START_SCRIPT_FROM_BOOT
+//----- https://jsonformatter.org/json-stringify-online -----
 #define PRECONFIGURED_SCRIPT ">D\nButton1=0\nButton2=0\nButton3=0\n\n>B\n->power4 0\n->PWMFrequency 4000\n->led1 101010\n->led2 101010\n->led3 101010\n->led4 101010\ndelay(1000)\n->led1 100000\ndelay(1000)\n->led2 100000\ndelay(1000)\n->led3 100000\ndelay(1000)\n->led4 100000\ndelay(1000)\n->led1 101010\n->led2 101010\n->led3 101010\n->led4 101010\n\n>b\nButton1=bt[1]\nButton2=bt[2]\nButton3=bt[3]\n\nif Button1==1\nthen ->scheme 12\n->buzzer 37 1 15\nelse\n->scheme 0\nendif\n\nif Button3==1\nthen ->ZbPermitJoin 1\nendif"
 
 #ifdef FRIENDLY_NAME
