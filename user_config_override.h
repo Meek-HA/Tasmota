@@ -1,6 +1,10 @@
 /*
 PASTE FOLLOWING IN "platformio_tasmota_cenv.ini"
 -------------------------------------------
+[env:tasmota-perilex]
+build_flags = ${env.build_flags} -DFIRMWARE_PERILEX
+board                   = esp8266_4M2M
+
 [env:tasmota-mt3]
 build_flags = ${env.build_flags} -DFIRMWARE_MT3
 board = esp8266_4M2M
@@ -268,6 +272,42 @@ board                   = esp32
 #define USE_PING
 #endif
 
+//-- MEEK PERILEX ---------------------------
+#ifdef FIRMWARE_PERILEX
+#warning **** Build: MEEK PERILEX ****
+#undef CODE_IMAGE_STR
+#define CODE_IMAGE_STR "Meek"
+
+#ifdef MODULE
+#undef MODULE
+#endif
+#define MODULE USER_MODULE
+
+#ifdef FALLBACK_MODULE
+#undef FALLBACK_MODULE
+#endif
+#define FALLBACK_MODULE USER_MODULE
+
+#ifdef ESP8266
+#define USER_TEMPLATE "{\"NAME\":\"Meek PERILEX\",\"GPIO\":[480,1,1376,1,224,225,1,1,161,162,160,226,227,1],\"FLAG\":0,\"BASE\":18}"
+#endif
+
+#define START_SCRIPT_FROM_BOOT
+//----- https://jsonformatter.org/json-stringify-online -----
+#define PRECONFIGURED_SCRIPT ">D\r\nButton=0\r\nStatus=0\r\n\r\n>B\r\n->power4 0\r\n->PWMFrequency 4000\r\n->led1 100000\r\ndelay(1000)\r\nif pwr[1]==1\r\nthen ->led1 101010\r\nStatus=1\r\nendif\r\nif pwr[2]==1\r\nthen ->led1 000010\r\nStatus=2\r\nendif\r\nif pwr[3]==1\r\nthen ->led1 100000\r\nStatus=3\r\nendif\r\n->power4 1\r\nif Status==0\r\nthen\r\n=>power1 1\r\nendif\r\n\r\n>b\r\nButton=bt[1]\r\nif Button==1\r\nthen\r\nStatus+=1\r\nendif\r\n\r\nif Status==1\r\nthen\r\n->Power1 1\r\n->led1 999999\r\n->buzzer 1\r\n->led1 101010\r\nendif\r\n\r\nif Status==2\r\nthen\r\n->Power2 1\r\n->led1 000099\r\n->buzzer 2\r\n->led1 000010\r\nendif\r\n\r\nif Status==3\r\nthen\r\n->Power3 1\r\n->led1 990000\r\n->buzzer 3\r\n->led1 100000\r\nStatus=0\r\nendif\r\n\r\n>P\r\nif pwr[3]==1\r\nthen\r\n->led1 990000\r\n->buzzer 3\r\n->led1 100000\r\nStatus=0\r\nendif\r\n\r\nif pwr[2]==1\r\nthen\r\n->led1 000099\r\n->buzzer 2\r\n->led1 000010\r\nStatus=2\r\nendif\r\n\r\nif pwr[1]==1\r\nthen\r\n->led1 999999\r\n->buzzer 1\r\n->led1 101010\r\nStatus=1\r\nendif"
+
+#undef WS2812_LEDS
+#define WS2812_LEDS            1    //Amount of LED's
+
+#ifdef FRIENDLY_NAME
+#undef FRIENDLY_NAME
+#endif
+#define FRIENDLY_NAME "Perilex"
+
+#define USER_BACKLOG "script 1;SetOption111 1;SetOption1 1;SetOption73 1 1;SetOption13 1;FriendlyName1 Low;FriendlyName2 Medium;FriendlyName3 High;FriendlyName4 $Touch Control;FriendlyName5 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Low;WebButton2 Medium;WebButton3 High;WebButton4 Touch;WebButton5 RGB"
+#endif
+
+
 //-- MEEK MT3 ---------------------------
 #ifdef FIRMWARE_MT3
 #warning **** Build: MEEK MT3 ****
@@ -289,6 +329,7 @@ board                   = esp32
 #endif
 
 #define START_SCRIPT_FROM_BOOT
+//----- https://jsonformatter.org/json-stringify-online -----
 #define PRECONFIGURED_SCRIPT ">D\nout1=0\nout2=0\nout3=0\n\n>B\n->power4 0\n->PWMFrequency 4000\n->led1 101010\n->led2 101010\n->led3 101010\ndelay(1000)\n->led1 100000\ndelay(1000)\n->led2 100000\ndelay(1000)\n->led3 100000\ndelay(1000)\n->power4 1\n->led1 101010\n->led2 101010\n->led3 101010\nif pwr[1]==1\nthen ->led1 100010\nout1=1\nendif\nif pwr[2]==1\nthen ->led2 100010\nout2=1\nendif\nif pwr[3]==1\nthen ->led3 100010\nout3=1\nendif\n\n>P\nif pwr[3]!=out3\nthen\nif out3==0\nthen\n->led3 990099\n->buzzer 1\n->led3 100010\nout3=1\nbreak\nelse\n->led3 999999\n->buzzer 1\n->led3 101010\nout3=0\nbreak\nendif\nendif\n\nif pwr[2]!=out2\nthen\nif out2==0\nthen\n->led2 990099\n->buzzer 1\n->led2 100010\nout2=1\nbreak\nelse\n->led2 999999\n->buzzer 1\n->led2 101010\nout2=0\nbreak\nendif\nendif\n\nif pwr[1]!=out1\nthen\nif out1==0\nthen\n->led1 990099\n->buzzer 1\n->led1 100010\nout1=1\nbreak\nelse\n->led1 999999\n->buzzer 1\n->led1 101010\nout1=0\nbreak\nendif\nendif\n"
 
 #undef WS2812_LEDS
