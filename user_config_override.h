@@ -294,7 +294,7 @@ board                   = esp32
 
 #define START_SCRIPT_FROM_BOOT
 //----- https://jsonformatter.org/json-stringify-online -----
-#define PRECONFIGURED_SCRIPT ">D\r\nButton=0\r\nStatus=0\r\n\r\n>B\r\n->power4 0\r\n->PWMFrequency 4000\r\n->led1 100000\r\ndelay(1000)\r\nif pwr[1]==1\r\nthen ->led1 101010\r\nStatus=1\r\nendif\r\nif pwr[2]==1\r\nthen ->led1 000010\r\nStatus=2\r\nendif\r\nif pwr[3]==1\r\nthen ->led1 100000\r\nStatus=3\r\nendif\r\n->power4 1\r\nif Status==0\r\nthen\r\n=>power1 1\r\nendif\r\n\r\n>b\r\nButton=bt[1]\r\nif Button==1\r\nthen\r\nStatus+=1\r\nendif\r\n\r\nif Status==1\r\nthen\r\n->Power1 1\r\n->led1 999999\r\n->buzzer 1\r\n->led1 101010\r\nendif\r\n\r\nif Status==2\r\nthen\r\n->Power2 1\r\n->led1 000099\r\n->buzzer 2\r\n->led1 000010\r\nendif\r\n\r\nif Status==3\r\nthen\r\n->Power3 1\r\n->led1 990000\r\n->buzzer 3\r\n->led1 100000\r\nStatus=0\r\nendif\r\n\r\n>P\r\nif pwr[3]==1\r\nthen\r\n->led1 990000\r\n->buzzer 3\r\n->led1 100000\r\nStatus=0\r\nendif\r\n\r\nif pwr[2]==1\r\nthen\r\n->led1 000099\r\n->buzzer 2\r\n->led1 000010\r\nStatus=2\r\nendif\r\n\r\nif pwr[1]==1\r\nthen\r\n->led1 999999\r\n->buzzer 1\r\n->led1 101010\r\nStatus=1\r\nendif"
+#define PRECONFIGURED_SCRIPT ">D\r\nButton=0\r\nStatus=0\r\n\r\n>B\r\n->power4 0\r\n->PWMFrequency 4000\r\n->led1 100000\r\ndelay(1000)\r\nif pwr[1]==1\r\nthen ->led1 101010\r\nStatus=1\r\nendif\r\nif pwr[2]==1\r\nthen ->led1 000010\r\nStatus=2\r\nendif\r\nif pwr[3]==1\r\nthen ->led1 100000\r\nStatus=3\r\nendif\r\n->power4 1\r\nif Status==0\r\nthen\r\n=>power1 1\r\nendif\r\n\r\n>b\r\nButton=bt[1]\r\nif Button==1\r\nthen\r\nStatus+=1\r\nendif\r\n\r\nif Status==1\r\nthen\r\n+>Power1 1\r\nendif\r\n\r\nif Status==2\r\nthen\r\n+>Power2 1\r\nendif\r\n\r\nif Status==3\r\nthen\r\n+>Power3 1\r\nendif\r\n\r\n>P\r\nif pwr[3]==1\r\nthen\r\n->led1 990000\r\n->buzzer 3\r\n->led1 100000\r\nStatus=0\r\nendif\r\n\r\nif pwr[2]==1\r\nthen\r\n->led1 000099\r\n->buzzer 2\r\n->led1 000010\r\nStatus=2\r\nendif\r\n\r\nif pwr[1]==1\r\nthen\r\n->led1 999999\r\n->buzzer 1\r\n->led1 101010\r\nStatus=1\r\nendif"
 
 #undef WS2812_LEDS
 #define WS2812_LEDS            1    //Amount of LED's
@@ -481,8 +481,6 @@ board                   = esp32
 #define USER_BACKLOG "SwitchMode1 4;SwitchMode2 4;PulseTime2 25;SerialDelimiter 10;SerialSend 1;Wifi 3;FriendlyName1 Relay;WebButton1 Relay;FriendlyName2 DoorBell;WebButton2 DoorBell;FriendlyName3 $RGB;WebButton3 RGB"
 
 #endif
-
-
 
 //-- MEEK ZIGBEE ESP32 ---------------------------
 #ifdef FIRMWARE_ZIGBEE32
