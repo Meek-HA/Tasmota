@@ -187,13 +187,15 @@
         "append": "",
         "useSpawn": "false",
         "timer": "",
-        "winHide": false,
+        "winHide": true,
         "oldrc": false,
         "name": "Start ZIgbee2MQTT",
         "x": 460,
         "y": 260,
         "wires": [
-            [],
+            [
+                "e4848e1d4ce0315d"
+            ],
             [],
             []
         ]
@@ -270,6 +272,51 @@
             [],
             [],
             []
+        ]
+    },
+    {
+        "id": "992980091553a7e1",
+        "type": "mqtt out",
+        "z": "d6a10370.54618",
+        "name": "TCPStart",
+        "topic": "cmnd/Meek_Zigbee/tcpconnect",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8ce31000.7fac3",
+        "x": 820,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "e4848e1d4ce0315d",
+        "type": "change",
+        "z": "d6a10370.54618",
+        "name": "Payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "xxxContainerxxx05,zzzDomainzzz",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 660,
+        "y": 260,
+        "wires": [
+            [
+                "992980091553a7e1"
+            ]
         ]
     },
     {
