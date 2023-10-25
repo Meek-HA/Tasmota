@@ -308,6 +308,46 @@ board                   = esp32
 #endif
 
 
+
+//-- MEEK MASTER GANG2 ---------------------------
+#ifdef FIRMWARE_MG2
+#warning **** Build: MEEK MASTER GANG2 ****
+#undef CODE_IMAGE_STR
+#define CODE_IMAGE_STR "Meek"
+
+#ifdef MODULE
+#undef MODULE
+#endif
+#define MODULE USER_MODULE
+
+#ifdef FALLBACK_MODULE
+#undef FALLBACK_MODULE
+#endif
+#define FALLBACK_MODULE USER_MODULE
+
+#ifdef ESP8266
+#define USER_TEMPLATE "{\"NAME\":\"Meek MG2\",\"GPIO\":[480,1,1376,1,224,160,1,1,0,161,164,225,226,1],\"FLAG\":0,\"BASE\":18}"
+#endif
+
+#define START_SCRIPT_FROM_BOOT
+//----- https://jsonformatter.org/json-stringify-online -----
+#define PRECONFIGURED_SCRIPT ">D\r\nout1=0\r\nout2=0\r\n\r\n>B\r\n->power3 0\r\n->PWMFrequency 4000\r\n->led1 101010\r\n->led2 101010\r\ndelay(1000)\r\n->led1 100000\r\ndelay(1000)\r\n->led2 100000\r\ndelay(1000)\r\n->power3 1\r\n->led1 101010\r\n->led2 101010\r\nif pwr[1]==1\r\nthen ->led1 100010\r\nout1=1\r\nendif\r\nif pwr[2]==1\r\nthen ->led2 100010\r\nout2=1\r\nendif\r\n\r\n>P\r\nif pwr[2]!=out2\r\nthen\r\nif out2==0\r\nthen\r\n->led2 990099\r\n->buzzer 1\r\n->led2 100010\r\nout2=1\r\nbreak\r\nelse\r\n->led2 999999\r\n->buzzer 1\r\n->led2 101010\r\nout2=0\r\nbreak\r\nendif\r\nendif\r\n\r\nif pwr[1]!=out1\r\nthen\r\nif out1==0\r\nthen\r\n->led1 990099\r\n->buzzer 1\r\n->led1 100010\r\nout1=1 #->websend [ip MG-Slave] led2 100010\r\nbreak\r\nelse\r\n->led1 999999\r\n->buzzer 1\r\n->led1 101010\r\nout1=0 #->websend [ip MG-Slave] led2 101010\r\nbreak\r\nendif\r\nendif"
+
+#undef WS2812_LEDS
+#define WS2812_LEDS            2    //Amount of LED's
+
+#ifdef FRIENDLY_NAME
+#undef FRIENDLY_NAME
+#endif
+#define FRIENDLY_NAME "Master Gang 2"
+
+#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 3;SwitchMode2 4;SwitchMode5 3;SetOption13 1;SetOption1 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB"
+#endif
+
+
+
+
+
 //-- MEEK MT3 ---------------------------
 #ifdef FIRMWARE_MT3
 #warning **** Build: MEEK MT3 ****
@@ -325,7 +365,7 @@ board                   = esp32
 #define FALLBACK_MODULE USER_MODULE
 
 #ifdef ESP8266
-#define USER_TEMPLATE "{\"NAME\":\"Meek MT3\",\"GPIO\":[480,1,1376,1,224,225,1,1,161,162,160,226,227,1],\"FLAG\":0,\"BASE\":18}"
+#define USER_TEMPLATE "{\"NAME\":\"Meek MT3\",\"GPIO\":[480,1,1376,1,225,226,1,1,161,162,160,224,227,1],\"FLAG\":0,\"BASE\":18}"
 #endif
 
 #define START_SCRIPT_FROM_BOOT
@@ -481,6 +521,83 @@ board                   = esp32
 #define USER_BACKLOG "SwitchMode1 4;SwitchMode2 4;PulseTime2 25;SerialDelimiter 10;SerialSend 1;Wifi 3;FriendlyName1 Relay;WebButton1 Relay;FriendlyName2 DoorBell;WebButton2 DoorBell;FriendlyName3 $RGB;WebButton3 RGB"
 
 #endif
+
+
+
+//-- MEEK DD ESP32 ---------------------------
+#ifdef FIRMWARE_DD32
+#warning **** Build: MEEK DD ESP32 ****
+#undef CODE_IMAGE_STR
+#define CODE_IMAGE_STR "Meek"
+
+#ifdef USE_SERIAL_BRIDGE
+#undef USE_SERIAL_BRIDGE
+#endif
+#define USE_SERIAL_BRIDGE
+
+#ifdef PROJECT
+#undef PROJECT
+#endif
+#define PROJECT "Meek_DD32"
+
+#ifdef MQTT_TOPIC
+#undef MQTT_TOPIC
+#endif
+#define MQTT_TOPIC             PROJECT
+
+#ifdef USE_TCP_BRIDGE
+#undef USE_TCP_BRIDGE
+#endif
+#define USE_TCP_BRIDGE
+
+//-- Smart Meter Interface ---------------------------
+#ifndef USE_SML_M
+#define USE_SML_M
+#endif
+
+#define USE_I2C
+
+//-- DFPlayer minie ---------------------------
+#ifdef USE_MP3_PLAYER
+#undef USE_MP3_PLAYER
+#endif
+#define USE_MP3_PLAYER
+
+#ifdef MP3_VOLUME
+#undef MP3_VOLUME
+#endif
+#define MP3_VOLUME 25
+
+#undef WS2812_LEDS
+#define WS2812_LEDS            250    //Amount of LED's
+
+#ifdef MODULE
+#undef MODULE
+#endif
+#define MODULE USER_MODULE
+
+#ifdef FALLBACK_MODULE
+#undef FALLBACK_MODULE
+#endif
+#define FALLBACK_MODULE USER_MODULE
+
+#ifdef ESP32
+#define USER_TEMPLATE "{\"NAME\":\"Meek DD32\",\"GPIO\":[0,0,0,0,0,0,0,0,0,1376,354,0,32,0,2144,0,0,0,5472,5504,0,224,352,353,0,0,0,0,608,640,0,4704,0,0,0,0],\"FLAG\":0,\"BASE\":1}"
+#endif
+
+//-- Meek DD Script ---------------------------
+#define START_SCRIPT_FROM_BOOT
+//----- https://jsonformatter.org/json-stringify-online -----
+#define PRECONFIGURED_SCRIPT ">D\r\np:melody=1\r\np:volume=10\r\ndoorbell=0\r\nbutton=0\r\ntimer=0\r\n\r\n>B\r\n->led1 101010\r\ndelay(1000)\r\n->led1 100000\r\n\r\n>W\r\nsl(1 25 melody \"1\" \"Melody\" \"25\")\r\nsl(0 100 volume \"0\" \"Volume\" \"100\")\r\nMelody:{m} %0melody%\r\nVolume:{m} %0volume%\r\n>BS\r\n+>subscribe volume, cmnd/%topic%/volume\r\n+>subscribe melody, cmnd/%topic%/melody\r\n\r\n>S\r\nif chg[volume]> 0 {\r\n=>publish stat/%topic%/RESULT {\"volume\":\"%0volume%\"}\r\n=>mp3volume %volume%\r\nprint Volume changed to level: %0volume%\r\n}\r\nif chg[melody]> 0 {\r\n=>publish stat/%topic%/RESULT {\"melody\":\"%0melody%\"}\r\nprint Melody selection updated to track: %0melody%\r\n}\r\n\r\nif upsecs-timer>5\r\nand doorbell==1 \r\nthen\r\ndoorbell=0\r\nendif\r\n\r\n>b\r\nbutton=bt[1]\r\nif chg[button]>0\r\nand doorbell==0\r\nthen  \r\ndoorbell=1\r\nprint Someone is at the door!\r\ntimer=upsecs+5\r\n=>MP3Track %0melody%\r\nendif"
+
+#ifdef FRIENDLY_NAME
+#undef FRIENDLY_NAME
+#endif
+#define FRIENDLY_NAME "Meek DD32"
+#define USER_BACKLOG "Wifi 3;script 1;SetOption1 1;SetOption13 1;SetOption111 1;SwitchMode1 15;SwitchMode2 15;SwitchMode3 15"
+#endif
+
+
 
 //-- MEEK ZIGBEE ESP32 ---------------------------
 #ifdef FIRMWARE_ZIGBEE32
