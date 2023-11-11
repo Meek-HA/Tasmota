@@ -1,9 +1,19 @@
 /*
 PASTE FOLLOWING IN "platformio_tasmota_cenv.ini"
 -------------------------------------------
+
 [env:tasmota-perilex]
 build_flags = ${env.build_flags} -DFIRMWARE_PERILEX
 board                   = esp8266_4M2M
+
+[env:tasmota-master-gang2]
+build_flags = ${env.build_flags} -DFIRMWARE_MG2
+board = esp8266_4M2M
+
+[env:tasmota-master-gang1]
+build_flags = ${env.build_flags} -DFIRMWARE_MG1
+board = esp8266_4M2M
+
 
 [env:tasmota-mt3]
 build_flags = ${env.build_flags} -DFIRMWARE_MT3
@@ -25,6 +35,11 @@ board = esp8266_4M2M
 build_flags = ${env.build_flags} -DFIRMWARE_DD
 board = esp8266_4M2M
 
+[env:tasmota-dd32]
+extends                 = env:tasmota32_base
+build_flags             = ${env:tasmota32_base.build_flags} -DFIRMWARE_DD32
+board                   = esp32
+
 [env:tasmota-zigbee8266]
 build_flags = ${env.build_flags} -DFIRMWARE_ZIGBEE8266
 board = esp8266_4M2M
@@ -40,13 +55,21 @@ board                   = esp32
 #ifndef _USER_CONFIG_OVERRIDE_H_
 #define _USER_CONFIG_OVERRIDE_H_
 
-/*
+#undef WIFI_CONFIG_TOOL
+#define WIFI_CONFIG_TOOL       WIFI_MANAGER        // [WifiConfig] Default tool if Wi-Fi fails to connect (default option: 4 - WIFI_RETRY)
+                                                 // (WIFI_RESTART, WIFI_MANAGER, WIFI_RETRY, WIFI_WAIT, WIFI_SERIAL, WIFI_MANAGER_RESET_ONLY)
+
+
+#undef WIFI_NO_SLEEP
+#define WIFI_NO_SLEEP          true             // [SetOption127] Sets Wifi in no-sleep mode which improves responsiveness on some routers
+
+
 #undef  STA_SSID1
-#define STA_SSID1         "Wifi"             // [Ssid1] Wifi SSID
+#define STA_SSID1         ""             // [Ssid1] Wifi SSID
 
 #undef  STA_PASS1
-#define STA_PASS1         "Password"     // [Password1] Wifi password
-*/
+#define STA_PASS1         ""     // [Password1] Wifi password
+
 
 #ifdef ROTARY_V1
 #undef ROTARY_V1
@@ -341,7 +364,7 @@ board                   = esp32
 #endif
 #define FRIENDLY_NAME "Master Gang 2"
 
-#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 3;SwitchMode2 4;SwitchMode5 3;SetOption13 1;SetOption1 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB"
+#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 3;SwitchMode2 4;SwitchMode5 3;SetOption13 1;SetOption1 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB;power3 1;power4 1"
 #endif
 
 
@@ -380,7 +403,7 @@ board                   = esp32
 #endif
 #define FRIENDLY_NAME "Touch 3"
 
-#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;FriendlyName1 Left;FriendlyName2 Center;FriendlyName3 Right;FriendlyName4 $Touch Control;FriendlyName5 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Center;WebButton3 Right;WebButton4 Touch;WebButton5 RGB"
+#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SwitchMode3 4;SetOption13 1;FriendlyName1 Left;FriendlyName2 Center;FriendlyName3 Right;FriendlyName4 $Touch Control;FriendlyName5 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Center;WebButton3 Right;WebButton4 Touch;WebButton5 RGB;power4 1;power5 1"
 #endif
 
 //-- MEEK MT2 ---------------------------
@@ -405,7 +428,7 @@ board                   = esp32
 
 #define START_SCRIPT_FROM_BOOT
 //----- https://jsonformatter.org/json-stringify-online -----
-#define PRECONFIGURED_SCRIPT ">D\nout1=0\nout2=0\nout3=0\n\n>B\n->power4 0\n->PWMFrequency 4000\n->led1 101010\n->led2 101010\n->led3 101010\ndelay(1000)\n->led1 100000\ndelay(1000)\n->led2 100000\ndelay(1000)\n->led3 100000\ndelay(1000)\n->power4 1\n->led1 101010\n->led2 101010\n->led3 101010\nif pwr[1]==1\nthen ->led1 100010\nout1=1\nendif\nif pwr[2]==1\nthen ->led2 100010\nout2=1\nendif\nif pwr[3]==1\nthen ->led3 100010\nout3=1\nendif\n\n>P\nif pwr[3]!=out3\nthen\nif out3==0\nthen\n->led3 990099\n->buzzer 1\n->led3 100010\nout3=1\nbreak\nelse\n->led3 999999\n->buzzer 1\n->led3 101010\nout3=0\nbreak\nendif\nendif\n\nif pwr[2]!=out2\nthen\nif out2==0\nthen\n->led2 990099\n->buzzer 1\n->led2 100010\nout2=1\nbreak\nelse\n->led2 999999\n->buzzer 1\n->led2 101010\nout2=0\nbreak\nendif\nendif\n\nif pwr[1]!=out1\nthen\nif out1==0\nthen\n->led1 990099\n->buzzer 1\n->led1 100010\nout1=1\nbreak\nelse\n->led1 999999\n->buzzer 1\n->led1 101010\nout1=0\nbreak\nendif\nendif\n"
+#define PRECONFIGURED_SCRIPT ">D\r\nout1=0\r\nout2=0\r\n\r\n>B\r\n->power4 0\r\n->PWMFrequency 4000\r\n->led1 101010\r\n->led2 101010\r\ndelay(1000)\r\n->led1 100000\r\ndelay(1000)\r\n->led2 100000\r\ndelay(1000)\r\n->power4 1\r\n->led1 101010\r\n->led2 101010\r\nif pwr[1]==1\r\nthen ->led1 100010\r\nout1=1\r\nendif\r\nif pwr[2]==1\r\nthen ->led2 100010\r\nout2=1\r\nendif\r\n\r\n>P\r\nif pwr[2]!=out2\r\nthen\r\nif out2==0\r\nthen\r\n->led2 990099\r\n->buzzer 1\r\n->led2 100010\r\nout2=1\r\nbreak\r\nelse\r\n->led2 999999\r\n->buzzer 1\r\n->led2 101010\r\nout2=0\r\nbreak\r\nendif\r\nendif\r\n\r\nif pwr[1]!=out1\r\nthen\r\nif out1==0\r\nthen\r\n->led1 990099\r\n->buzzer 1\r\n->led1 100010\r\nout1=1\r\nbreak\r\nelse\r\n->led1 999999\r\n->buzzer 1\r\n->led1 101010\r\nout1=0\r\nbreak\r\nendif\r\nendif"
 
 #undef WS2812_LEDS
 #define WS2812_LEDS            2    //Amount of LED's
@@ -415,7 +438,7 @@ board                   = esp32
 #endif
 #define FRIENDLY_NAME "Touch 2"
 
-#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB"
+#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB;power3 1;power4 1"
 #endif
 
 //-- MEEK MT1 ---------------------------
@@ -450,7 +473,7 @@ board                   = esp32
 #endif
 #define FRIENDLY_NAME "Touch 1"
 
-#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;FriendlyName1 Button;FriendlyName2 $Touch Control;FriendlyName3 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Button;WebButton2 Touch;WebButton3 RGB"
+#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;FriendlyName1 Button;FriendlyName2 $Touch Control;FriendlyName3 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Button;WebButton2 Touch;WebButton3 RGB;power2 1;power3 1"
 #endif
 
 //-- MEEK DD ---------------------------
