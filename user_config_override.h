@@ -14,7 +14,6 @@ board = esp8266_4M2M
 build_flags = ${env.build_flags} -DFIRMWARE_MG1
 board = esp8266_4M2M
 
-
 [env:tasmota-mt3]
 build_flags = ${env.build_flags} -DFIRMWARE_MT3
 board = esp8266_4M2M
@@ -29,6 +28,10 @@ board = esp8266_4M2M
 
 [env:tasmota-mp1]
 build_flags = ${env.build_flags} -DFIRMWARE_MP1
+board = esp8266_4M2M
+
+[env:tasmota-md1]
+build_flags = ${env.build_flags} -DFIRMWARE_MD1
 board = esp8266_4M2M
 
 [env:tasmota-dd]
@@ -69,7 +72,6 @@ board                   = esp32
 
 #undef  STA_PASS1
 #define STA_PASS1         ""     // [Password1] Wifi password
-
 
 #ifdef ROTARY_V1
 #undef ROTARY_V1
@@ -608,7 +610,7 @@ board                   = esp32
 #define USER_TEMPLATE "{\"NAME\":\"Meek DD32\",\"GPIO\":[0,0,0,0,0,0,0,0,0,1376,354,0,32,0,2144,0,0,0,5472,5504,0,224,352,353,0,0,0,0,608,640,0,4704,0,0,0,0],\"FLAG\":0,\"BASE\":1}"
 #endif
 
-//-- Meek DD Script ---------------------------
+//-- Meek DD32 Script ---------------------------
 #define START_SCRIPT_FROM_BOOT
 //----- https://jsonformatter.org/json-stringify-online -----
 #define PRECONFIGURED_SCRIPT ">D\r\np:melody=1\r\np:volume=10\r\ndoorbell=0\r\nbutton=0\r\ntimer=0\r\n\r\n>B\r\n->led1 101010\r\ndelay(1000)\r\n->led1 100000\r\n\r\n>W\r\nsl(1 25 melody \"1\" \"Melody\" \"25\")\r\nsl(0 100 volume \"0\" \"Volume\" \"100\")\r\nMelody:{m} %0melody%\r\nVolume:{m} %0volume%\r\n>BS\r\n+>subscribe volume, cmnd/%topic%/volume\r\n+>subscribe melody, cmnd/%topic%/melody\r\n\r\n>S\r\nif chg[volume]> 0 {\r\n=>publish stat/%topic%/RESULT {\"volume\":\"%0volume%\"}\r\n=>mp3volume %volume%\r\nprint Volume changed to level: %0volume%\r\n}\r\nif chg[melody]> 0 {\r\n=>publish stat/%topic%/RESULT {\"melody\":\"%0melody%\"}\r\nprint Melody selection updated to track: %0melody%\r\n}\r\n\r\nif upsecs-timer>5\r\nand doorbell==1 \r\nthen\r\ndoorbell=0\r\nendif\r\n\r\n>b\r\nbutton=bt[1]\r\nif chg[button]>0\r\nand doorbell==0\r\nthen  \r\ndoorbell=1\r\nprint Someone is at the door!\r\ntimer=upsecs+5\r\n=>MP3Track %0melody%\r\nendif"
@@ -617,7 +619,7 @@ board                   = esp32
 #undef FRIENDLY_NAME
 #endif
 #define FRIENDLY_NAME "Meek DD32"
-#define USER_BACKLOG "Wifi 3;script 1;SetOption1 1;SetOption13 1;SetOption111 1;SwitchMode1 15;SwitchMode2 15;SwitchMode3 15"
+#define USER_BACKLOG "Wifi 3;script 1;SetOption1 1;SetOption13 1;SetOption111 1;SwitchMode1 15;SwitchMode2 15;SwitchMode3 15;power2 1"
 #endif
 
 
@@ -681,5 +683,46 @@ board                   = esp32
 #define FRIENDLY_NAME "Zigbee Gateway"
 #define USER_BACKLOG "Wifi 3;script 1;SetOption1 1;SetOption13 1;SetOption111 1;SwitchMode1 15;SwitchMode2 15;SwitchMode3 15"
 #endif
+
+
+//-- MEEK Dimmer1 ---------------------------
+#ifdef FIRMWARE_MD1
+#warning **** Build: MEEK Dimmer1 ****
+#undef CODE_IMAGE_STR
+#define CODE_IMAGE_STR "Meek"
+
+#ifdef MODULE
+#undef MODULE
+#endif
+#define MODULE USER_MODULE
+
+#define USE_PWM_DIMMER
+
+#define USE_PWM_DIMMER_REMOTE
+
+#ifdef FALLBACK_MODULE
+#undef FALLBACK_MODULE
+#endif
+#define FALLBACK_MODULE USER_MODULE
+
+#ifdef ESP8266
+#define USER_TEMPLATE "{\"NAME\":\"Meek MD1\",\"GPIO\":[0,0,0,0,352,355,1,1,0,161,160,416,226,1],\"FLAG\":0,\"BASE\":18}"
+#endif
+
+#define START_SCRIPT_FROM_BOOT
+//----- https://jsonformatter.org/json-stringify-online -----
+//#define PRECONFIGURED_SCRIPT ">D\r\nout1=0\r\n>B\r\n->power2 0\r\n->PWMFrequency 4000\r\n->led1 101010\r\ndelay(1000)\r\n->led1 100000\r\ndelay(1000)\r\n->power2 1\r\n->led1 101010\r\nif pwr[1]==1\r\nthen ->led1 100010\r\nout1=1\r\nendif\r\n\r\n>P\r\nif pwr[1]!=out1\r\nthen\r\nif out1==0\r\nthen\r\n->led1 990099\r\n->buzzer 1\r\n->led1 100010\r\nout1=1\r\nbreak\r\nelse\r\n->led1 999999\r\n->buzzer 1\r\n->led1 101010\r\nout1=0\r\nbreak\r\nendif\r\nendif"
+
+#undef WS2812_LEDS
+#define WS2812_LEDS            1    //Amount of LED's
+
+#ifdef FRIENDLY_NAME
+#undef FRIENDLY_NAME
+#endif
+#define FRIENDLY_NAME "Dimmer 1"
+#define USER_BACKLOG "script 1;Wifi 3"
+//#define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 4;SwitchMode2 4;SetOption13 1;FriendlyName1 Button;FriendlyName2 $Touch Control;FriendlyName3 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Button;WebButton2 Touch;WebButton3 RGB;power2 1;power3 1"
+#endif
+
 
 #endif  // _USER_CONFIG_OVERRIDE_H_
