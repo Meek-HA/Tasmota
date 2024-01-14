@@ -669,21 +669,20 @@ board                   = esp32
 #define FALLBACK_MODULE USER_MODULE
 
 #ifdef ESP32
-#define USER_TEMPLATE "{\"NAME\":\"Meek Zigbee\",\"GPIO\":[1,1,1,1,1,1,1,1,1,1,1,1,130,1,1,1376,0,5793,3584,3552,0,32,480,1,0,0,0,0,1,33,1,1,1,0,0,1],\"FLAG\":0,\"BASE\":1}"
+#define USER_TEMPLATE "{\"NAME\":\"Meek Zigbee\",\"GPIO\":[0,0,0,0,34,0,0,0,0,1376,0,0,5792,0,0,33,0,0,0,0,0,32,480,256,0,0,0,0,3552,3584,0,0,0,0,0,0],\"FLAG\":0,\"BASE\":1}"
 #endif
 
 //-- Zigbee Script ---------------------------
 #define START_SCRIPT_FROM_BOOT
 //----- https://jsonformatter.org/json-stringify-online -----
-#define PRECONFIGURED_SCRIPT ">D\nButton1=0\nButton2=0\nButton3=0\n\n>B\n->power4 0\n->PWMFrequency 4000\n->led1 101010\n->led2 101010\n->led3 101010\n->led4 101010\ndelay(1000)\n->led1 100000\ndelay(1000)\n->led2 100000\ndelay(1000)\n->led3 100000\ndelay(1000)\n->led4 100000\ndelay(1000)\n->led1 101010\n->led2 101010\n->led3 101010\n->led4 101010\n\n>b\nButton1=bt[1]\nButton2=bt[2]\nButton3=bt[3]\n\nif Button1==1\nthen ->scheme 12\n->buzzer 37 1 15\nelse\n->scheme 0\nendif\n\nif Button3==1\nthen ->ZbPermitJoin 1\nendif"
+#define PRECONFIGURED_SCRIPT ">D\nButton1=0\nButton2=0\nButton3=0\n\n>B\n->power4 0\n->PWMFrequency 4000\n->led1 101010\n->led2 101010\n->led3 101010\n->led4 101010\ndelay(1000)\n->led1 100000\ndelay(1000)\n->led2 100000\ndelay(1000)\n->led3 100000\ndelay(1000)\n->led4 100000\ndelay(1000)\n->led1 101010\n->led2 101010\n->led3 101010\n->led4 101010\n\n>b\nButton1=bt[1]\nButton2=bt[2]\nButton3=bt[3]\n\nif Button1==1\nthen ->scheme 12\n->buzzer 3\nelse\n->scheme 0\nendif\n\nif Button3==1\nthen ->ZbPermitJoin 1\nendif"
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
 #endif
 #define FRIENDLY_NAME "Zigbee Gateway"
-#define USER_BACKLOG "Wifi 3;script 1;SetOption1 1;SetOption13 1;SetOption111 1;SwitchMode1 15;SwitchMode2 15;SwitchMode3 15"
+#define USER_BACKLOG "Wifi 3;script 1;SetOption1 1;SetOption73 1;SetOption111 1;WebButton2 RGB;WebButton1 BSL;power1 0;power2 1"
 #endif
-
 
 //-- MEEK Dimmer1 ---------------------------
 #ifdef FIRMWARE_MD1
