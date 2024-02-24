@@ -256,7 +256,6 @@ board = esp8266_4M2M
 #define USE_I2C
 #define USE_SML_M
 #define USE_MP3_PLAYER
-#define MP3_VOLUME 15
 #undef WS2812_LEDS
 #define WS2812_LEDS            250    //Amount of LED's
 #endif
