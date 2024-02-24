@@ -369,10 +369,6 @@ board                   = esp32
 #define USER_BACKLOG "script 1;SetOption111 1;SwitchMode1 3;SwitchMode2 4;SwitchMode5 3;SetOption13 1;SetOption1 1;FriendlyName1 Left;FriendlyName2 Right;FriendlyName3 $Touch Control;FriendlyName4 $RGB LED;Wifi 3;SwitchDebounce 52;WebButton1 Left;WebButton2 Right;WebButton3 Touch;WebButton4 RGB;power3 1;power4 1"
 #endif
 
-
-
-
-
 //-- MEEK MT3 ---------------------------
 #ifdef FIRMWARE_MT3
 #warning **** Build: MEEK MT3 ****
@@ -613,7 +609,7 @@ board                   = esp32
 //-- Meek DD32 Script ---------------------------
 #define START_SCRIPT_FROM_BOOT
 //----- https://jsonformatter.org/json-stringify-online -----
-#define PRECONFIGURED_SCRIPT ">D\r\np:melody=1\r\np:volume=10\r\nbutton=0\r\ntimer=0\r\nplay=0\r\nstatus=0\r\np:DD=5\r\n\r\n>B\r\n->led1 101010\r\ndelay(1000)\r\n->led1 100000\r\n\r\n>W\r\nsl(1 50 melody \"1\" \"Melody %0melody%\" \"50\")\r\nsl(0 100 volume \"0\" \"Volume %0volume%\" \"100\")\r\nsl(0 20 DD \"0\" \"Delay %0DD%\" \"20\")\r\nbu(play \"Play\")\r\n\r\n>BS\r\n+>subscribe volume, cmnd/%topic%/volume\r\n+>subscribe melody, cmnd/%topic%/melody\r\n\r\n>S\r\nif chg[volume]> 0 {\r\n=>publish stat/%topic%/RESULT {\"volume\":\"%0volume%\"}\r\n=>mp3volume %volume%\r\nprint Volume changed to level: %0volume%\r\n}\r\nif chg[melody]> 0 {\r\n=>publish stat/%topic%/RESULT {\"melody\":\"%0melody%\"}\r\nprint Melody selection updated to track: %0melody%\r\n}\r\n\r\nif play==1\r\nthen\r\n=>MP3Track %0melody%\r\nplay=0\r\nendif\r\n\r\nif upsecs-timer>DD\r\nthen\r\nstatus=0\r\nendif\r\n\r\n>b\r\nbutton=bt[1]\r\nif button==status\r\nthen  \r\nprint Someone is at the door!\r\ntimer=upsecs+DD\r\n=>MP3Track %0melody%\r\nelse\r\nstatus=button\r\nendif"
+#define PRECONFIGURED_SCRIPT ">D\r\np:melody=1\r\np:volume=10\r\nbutton=0\r\ntimer=0\r\nplay=0\r\nstatus=0\r\nblock=0\r\np:DD=5\r\n\r\n>B\r\n->led1 101010\r\ndelay(1000)\r\n->led1 100000\r\n\r\n>W\r\nsl(1 50 melody \"1\" \"Melody %0melody%\" \"50\")\r\nsl(0 100 volume \"0\" \"Volume %0volume%\" \"100\")\r\nsl(0 20 DD \"0\" \"Delay %0DD%\" \"20\")\r\nbu(play \"Play\")\r\n\r\n>BS\r\n+>subscribe volume, cmnd/%topic%/volume\r\n+>subscribe melody, cmnd/%topic%/melody\r\n\r\n>S\r\nif chg[volume]> 0 {\r\n=>publish stat/%topic%/RESULT {\"volume\":\"%0volume%\"}\r\n=>mp3volume %volume%\r\nprint Volume changed to level: %0volume%\r\n}\r\nif chg[melody]> 0 {\r\n=>publish stat/%topic%/RESULT {\"melody\":\"%0melody%\"}\r\nprint Melody selection updated to track: %0melody%\r\n}\r\n\r\nif play==1\r\nthen\r\n=>MP3Track %0melody%\r\nplay=0\r\nendif\r\n\r\nif upsecs-timer>DD\r\nthen\r\nstatus=0\r\nblock=2\r\nendif\r\n\r\n>b\r\nbutton=bt[1]\r\nif button==status\r\nand block==2\r\nthen  \r\nprint Someone is at the door!\r\ntimer=upsecs+DD\r\n=>MP3Track %0melody%\r\nblock=0\r\nelse\r\nstatus=button\r\nendif"
 
 #ifdef FRIENDLY_NAME
 #undef FRIENDLY_NAME
